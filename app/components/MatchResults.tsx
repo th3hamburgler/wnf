@@ -6,28 +6,13 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Match, ProcessedPlayer } from "../lib/types";
+import Image from "next/image";
 import * as ZodiacIcons from "../icons";
 
 interface MatchResultsProps {
   matches: Match[];
   players: ProcessedPlayer[];
 }
-
-const zodiacIcons: { [key: string]: React.FC<React.SVGProps<SVGSVGElement>> } =
-  {
-    Aries: ZodiacIcons.Aries,
-    Taurus: ZodiacIcons.Taurus,
-    Gemini: ZodiacIcons.Gemini,
-    Cancer: ZodiacIcons.Cancer,
-    Leo: ZodiacIcons.Leo,
-    Virgo: ZodiacIcons.Virgo,
-    Libra: ZodiacIcons.Libra,
-    Scorpio: ZodiacIcons.Scorpio,
-    Sagittarius: ZodiacIcons.Sagittarius,
-    Capricorn: ZodiacIcons.Capricorn,
-    Aquarius: ZodiacIcons.Aquarius,
-    Pisces: ZodiacIcons.Pisces,
-  };
 
 export default function MatchResults({ matches, players }: MatchResultsProps) {
   const [currentMatchIndex, setCurrentMatchIndex] = useState(
@@ -96,6 +81,16 @@ export default function MatchResults({ matches, players }: MatchResultsProps) {
     };
   };
 
+  const getTeamNames = (match: Match) => {
+    if (match.GoalDifference > 0) {
+      return { teamA: "Team Winner", teamB: "Team Loser" };
+    } else if (match.GoalDifference < 0) {
+      return { teamA: "Team Loser", teamB: "Team Winner" };
+    } else {
+      return { teamA: "Team Draw", teamB: "Team Draw" };
+    }
+  };
+
   const sortedTeamA = useMemo(
     () => sortPlayersByPPG(currentMatch.teamA),
     [currentMatch.teamA, players]
@@ -114,6 +109,8 @@ export default function MatchResults({ matches, players }: MatchResultsProps) {
     [currentMatch.teamB, players]
   );
 
+  const teamNames = useMemo(() => getTeamNames(currentMatch), [currentMatch]);
+
   const PlayerList = ({
     players,
     teamName,
@@ -128,18 +125,29 @@ export default function MatchResults({ matches, players }: MatchResultsProps) {
     <div className={`border rounded-lg p-4 ${alignRight ? "text-right" : ""}`}>
       <h3 className="text-xl font-semibold mb-4">{teamName}</h3>
       <div className="mb-4">
-        <p>Average PPG: {teamStats.averagePPG.toFixed(2)}</p>
-        <p>Total WNF Points: {teamStats.totalWNF}</p>
-        <p>Average Age: {teamStats.averageAge.toFixed(1)}</p>
+        <p className="flex justify-between">
+          <span>Points Per Game:</span>{" "}
+          <span>{teamStats.averagePPG.toFixed(2)}</span>
+        </p>
+        <p className="flex justify-between">
+          <span>Total WNF Points:</span> <span>{teamStats.totalWNF}</span>
+        </p>
+        <p className="flex justify-between">
+          <span>Average Age:</span>{" "}
+          <span>{teamStats.averageAge.toFixed(1)}</span>
+        </p>
       </div>
       <ul className="space-y-2">
         {players.map((playerName, index) => {
           const playerStats = getPlayerStats(playerName);
           const ppg = playerStats ? playerStats.PointsPerGame : 0;
+          const totalPoints = playerStats ? playerStats.TotalPoints : 0;
           const ppgColor = getPPGColor(ppg);
           const starSign = playerStats?.StarSign;
           const IconComponent =
-            starSign && starSign in zodiacIcons ? zodiacIcons[starSign] : User;
+            starSign && starSign in ZodiacIcons
+              ? ZodiacIcons[starSign as keyof typeof ZodiacIcons]
+              : User;
           return (
             <li
               key={index}
@@ -161,7 +169,7 @@ export default function MatchResults({ matches, players }: MatchResultsProps) {
               >
                 <span className="text-lg">{playerName}</span>
                 <Badge variant="secondary" className={`text-xs ${ppgColor}`}>
-                  PPG: {ppg.toFixed(2)}
+                  {totalPoints}pts | {ppg.toFixed(2)}
                 </Badge>
               </div>
             </li>
@@ -206,40 +214,49 @@ export default function MatchResults({ matches, players }: MatchResultsProps) {
             <ChevronRight className="h-4 w-4 ml-2" />
           </Button>
         </div>
+
         {currentMatch.abandoned ? (
           <div className="text-center mb-4">
             <Badge variant="destructive" className="text-lg">
               Match Abandoned
             </Badge>
+            <div className="mt-4 flex justify-center">
+              <Image
+                src="/images/Diana_Ross_Misses_Penalty.gif"
+                alt="Match Abandoned"
+                width={0}
+                height={0}
+                sizes="100vw"
+                className="w-full h-auto"
+              />
+            </div>
           </div>
         ) : (
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <PlayerList
-              players={sortedTeamA}
-              teamName="Team A"
-              teamStats={teamAStats}
-            />
-            <PlayerList
-              players={sortedTeamB}
-              teamName="Team B"
-              alignRight={true}
-              teamStats={teamBStats}
-            />
+          <div>
+            <div className="mt-4 mb-4 text-center">
+              <div className="text-4xl font-bold">
+                {currentMatch.GoalDifference
+                  ? `+ ${currentMatch.GoalDifference}`
+                  : "Draw"}
+              </div>
+            </div>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <PlayerList
+                players={sortedTeamA}
+                teamName={teamNames.teamA}
+                teamStats={teamAStats}
+              />
+              <PlayerList
+                players={sortedTeamB}
+                teamName={teamNames.teamB}
+                alignRight={true}
+                teamStats={teamBStats}
+              />
+            </div>
           </div>
         )}
+
         <div className="mt-4 text-center">
-          <span className="text-2xl font-bold">
-            {currentMatch.abandoned
-              ? "N/A"
-              : `Goal Difference: ${currentMatch.GoalDifference}`}
-          </span>
-        </div>
-        <div className="mt-2 text-center">
-          <span className="text-lg">
-            Total Players: {currentMatch.TotalPlayers}
-          </span>
-        </div>
-        <div className="mt-2 text-center">
           <span className="text-lg">
             Teams Picked By: {currentMatch.WhoPickedTeams}
           </span>
