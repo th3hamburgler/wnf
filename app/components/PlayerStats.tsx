@@ -125,7 +125,8 @@ export default function PlayerStats({ players, matches }: PlayerStatsProps) {
     const daysActive =
       lastAppearance && firstAppearance
         ? Math.floor(
-            (lastAppearance.getTime() - firstAppearance.getTime()) /
+            ((lastAppearance as Date).getTime() -
+              (firstAppearance as Date).getTime()) /
               (1000 * 3600 * 24)
           )
         : 0;
