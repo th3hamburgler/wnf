@@ -7,6 +7,7 @@ export interface RawPlayerData {
 export interface ProcessedPlayer {
   Player: string;
   DOB: string | null;
+  Age: number | null;
   GamesPlayed: number;
   Wins: number;
   Draws: number;
@@ -31,10 +32,9 @@ export interface Match {
   date: string;
   teamA: string[];
   teamB: string[];
-  score: string;
-  TotalPlayers?: number;
-  GoalDifference?: number;
-  WhoPickedTeams?: string;
+  TotalPlayers: number;
+  GoalDifference: number;
+  WhoPickedTeams: string;
 }
 
 export interface FootballData {
@@ -42,5 +42,5 @@ export interface FootballData {
   matches: Match[];
   processedPlayers: ProcessedPlayer[];
   processedMatches: Match[];
-  rawData: RawPlayerData[]; // Add this line
+  rawData: RawPlayerData[];
 }

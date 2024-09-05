@@ -53,6 +53,7 @@ export default function DataProcessor() {
         <TableRow>
           <TableHead>Name</TableHead>
           <TableHead>DOB</TableHead>
+          <TableHead>Age</TableHead>
           <TableHead>Games Played</TableHead>
           <TableHead>Wins</TableHead>
           <TableHead>Draws</TableHead>
@@ -66,6 +67,7 @@ export default function DataProcessor() {
           <TableRow key={index}>
             <TableCell>{player.Player}</TableCell>
             <TableCell>{player.DOB || "N/A"}</TableCell>
+            <TableCell>{player.Age !== null ? player.Age : "N/A"}</TableCell>
             <TableCell>{player.GamesPlayed}</TableCell>
             <TableCell>{player.Wins}</TableCell>
             <TableCell>{player.Draws}</TableCell>
@@ -85,7 +87,6 @@ export default function DataProcessor() {
           <TableHead>Date</TableHead>
           <TableHead>Team A</TableHead>
           <TableHead>Team B</TableHead>
-          <TableHead>Score</TableHead>
           <TableHead>Total Players</TableHead>
           <TableHead>Goal Difference</TableHead>
           <TableHead>Who Picked Teams</TableHead>
@@ -97,14 +98,9 @@ export default function DataProcessor() {
             <TableCell>{match.date}</TableCell>
             <TableCell>{match.teamA.join(", ")}</TableCell>
             <TableCell>{match.teamB.join(", ")}</TableCell>
-            <TableCell>{match.score}</TableCell>
-            <TableCell>{match.TotalPlayers || "N/A"}</TableCell>
-            <TableCell>
-              {match.GoalDifference !== undefined
-                ? match.GoalDifference
-                : "N/A"}
-            </TableCell>
-            <TableCell>{match.WhoPickedTeams || "N/A"}</TableCell>
+            <TableCell>{match.TotalPlayers}</TableCell>
+            <TableCell>{match.GoalDifference}</TableCell>
+            <TableCell>{match.WhoPickedTeams}</TableCell>
           </TableRow>
         ))}
       </TableBody>

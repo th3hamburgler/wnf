@@ -30,7 +30,7 @@ const rawData: RawPlayerData[] = [
   },
   {
   "Player": "Sam Brown",
-  "DOB": "",
+  "DOB": "09/11/1996",
   "01/05/2024": "",
   "08/05/2024": "W",
   "22/05/2024": "W",
@@ -57,15 +57,15 @@ const rawData: RawPlayerData[] = [
   },
   {
   "Player": "Moha Bendali",
-  "DOB": "",
-  "01/05/2024": "D",
+  "DOB": "22/03/1996",
+  "01/05/2024": "D1",
   "08/05/2024": "",
   "22/05/2024": "W",
   "29/05/2024": "",
   "05/06/2024": "NC",
   "12/06/2024": "W",
   "19/06/2024": "W",
-  "26/06/2024": "D",
+  "26/06/2024": "D1",
   "03/07/2024": "W",
   "10/07/2024": "",
   "17/07/2024": "",
@@ -84,7 +84,7 @@ const rawData: RawPlayerData[] = [
   },
   {
   "Player": "Joseph Freeman",
-  "DOB": "",
+  "DOB": "01/02/1990",
   "01/05/2024": "",
   "08/05/2024": "",
   "22/05/2024": "L",
@@ -111,7 +111,7 @@ const rawData: RawPlayerData[] = [
   },
   {
   "Player": "Dave Wraith",
-  "DOB": "",
+  "DOB": "10/07/1985",
   "01/05/2024": "",
   "08/05/2024": "",
   "22/05/2024": "",
@@ -139,14 +139,14 @@ const rawData: RawPlayerData[] = [
   {
   "Player": "Jim Wardlaw",
   "DOB": "28/06/1983",
-  "01/05/2024": "D",
+  "01/05/2024": "D2",
   "08/05/2024": "W",
   "22/05/2024": "",
   "29/05/2024": "L",
   "05/06/2024": "NC",
   "12/06/2024": "L",
   "19/06/2024": "W",
-  "26/06/2024": "D",
+  "26/06/2024": "D1",
   "03/07/2024": "W",
   "10/07/2024": "W",
   "17/07/2024": "NC",
@@ -165,8 +165,8 @@ const rawData: RawPlayerData[] = [
   },
   {
   "Player": "Doug Park",
-  "DOB": "",
-  "01/05/2024": "D",
+  "DOB": "01/12/1977",
+  "01/05/2024": "D2",
   "08/05/2024": "",
   "22/05/2024": "W",
   "29/05/2024": "",
@@ -192,8 +192,8 @@ const rawData: RawPlayerData[] = [
   },
   {
   "Player": "Rich Potter",
-  "DOB": "",
-  "01/05/2024": "D",
+  "DOB": "01/12/1985",
+  "01/05/2024": "D2",
   "08/05/2024": "W",
   "22/05/2024": "W",
   "29/05/2024": "L",
@@ -219,8 +219,8 @@ const rawData: RawPlayerData[] = [
   },
   {
   "Player": "Tom Brown",
-  "DOB": "",
-  "01/05/2024": "D",
+  "DOB": "14/03/2000",
+  "01/05/2024": "D2",
   "08/05/2024": "W",
   "22/05/2024": "L",
   "29/05/2024": "W",
@@ -246,7 +246,7 @@ const rawData: RawPlayerData[] = [
   },
   {
   "Player": "Mike Nicholas",
-  "DOB": "",
+  "DOB": "01/10/1988",
   "01/05/2024": "",
   "08/05/2024": "",
   "22/05/2024": "W",
@@ -273,7 +273,7 @@ const rawData: RawPlayerData[] = [
   },
   {
   "Player": "Matt Thompson",
-  "DOB": "",
+  "DOB": "01/05/1986",
   "01/05/2024": "",
   "08/05/2024": "",
   "22/05/2024": "",
@@ -300,7 +300,7 @@ const rawData: RawPlayerData[] = [
   },
   {
   "Player": "Joe Gibson",
-  "DOB": "",
+  "DOB": "01/11/1989",
   "01/05/2024": "",
   "08/05/2024": "",
   "22/05/2024": "",
@@ -327,7 +327,7 @@ const rawData: RawPlayerData[] = [
   },
   {
   "Player": "Chris Stowell",
-  "DOB": "",
+  "DOB": "01/02/1991",
   "01/05/2024": "",
   "08/05/2024": "W",
   "22/05/2024": "",
@@ -354,15 +354,15 @@ const rawData: RawPlayerData[] = [
   },
   {
   "Player": "Mike Anson",
-  "DOB": "",
-  "01/05/2024": "D",
+  "DOB": "24/03/1983",
+  "01/05/2024": "D2",
   "08/05/2024": "L",
   "22/05/2024": "",
   "29/05/2024": "L",
   "05/06/2024": "NC",
   "12/06/2024": "L",
   "19/06/2024": "L",
-  "26/06/2024": "D",
+  "26/06/2024": "D2",
   "03/07/2024": "W",
   "10/07/2024": "W",
   "17/07/2024": "NC",
@@ -381,15 +381,15 @@ const rawData: RawPlayerData[] = [
   },
   {
   "Player": "Ash Garnett",
-  "DOB": "",
-  "01/05/2024": "D",
+  "DOB": "17/06/1992",
+  "01/05/2024": "D1",
   "08/05/2024": "L",
   "22/05/2024": "",
   "29/05/2024": "",
   "05/06/2024": "NC",
   "12/06/2024": "W",
   "19/06/2024": "W",
-  "26/06/2024": "D",
+  "26/06/2024": "D1",
   "03/07/2024": "L",
   "10/07/2024": "L",
   "17/07/2024": "NC",
@@ -408,7 +408,7 @@ const rawData: RawPlayerData[] = [
   },
   {
   "Player": "Gary Purdue",
-  "DOB": "",
+  "DOB": "01/01/1981",
   "01/05/2024": "",
   "08/05/2024": "",
   "22/05/2024": "",
@@ -416,7 +416,7 @@ const rawData: RawPlayerData[] = [
   "05/06/2024": "",
   "12/06/2024": "",
   "19/06/2024": "",
-  "26/06/2024": "D",
+  "26/06/2024": "D2",
   "03/07/2024": "",
   "10/07/2024": "",
   "17/07/2024": "",
@@ -435,7 +435,7 @@ const rawData: RawPlayerData[] = [
   },
   {
   "Player": "Wes Smith",
-  "DOB": "",
+  "DOB": "04/12/1990",
   "01/05/2024": "",
   "08/05/2024": "",
   "22/05/2024": "",
@@ -443,7 +443,7 @@ const rawData: RawPlayerData[] = [
   "05/06/2024": "",
   "12/06/2024": "",
   "19/06/2024": "",
-  "26/06/2024": "D",
+  "26/06/2024": "D2",
   "03/07/2024": "",
   "10/07/2024": "",
   "17/07/2024": "",
@@ -462,8 +462,8 @@ const rawData: RawPlayerData[] = [
   },
   {
   "Player": "Matt Gibson",
-  "DOB": "",
-  "01/05/2024": "D",
+  "DOB": "02/11/1982",
+  "01/05/2024": "D1",
   "08/05/2024": "",
   "22/05/2024": "L",
   "29/05/2024": "",
@@ -489,7 +489,7 @@ const rawData: RawPlayerData[] = [
   },
   {
   "Player": "John Benson",
-  "DOB": "",
+  "DOB": "01/08/1980",
   "01/05/2024": "",
   "08/05/2024": "L",
   "22/05/2024": "",
@@ -497,7 +497,7 @@ const rawData: RawPlayerData[] = [
   "05/06/2024": "NC",
   "12/06/2024": "W",
   "19/06/2024": "L",
-  "26/06/2024": "D",
+  "26/06/2024": "D2",
   "03/07/2024": "",
   "10/07/2024": "W",
   "17/07/2024": "NC",
@@ -516,15 +516,15 @@ const rawData: RawPlayerData[] = [
   },
   {
   "Player": "Mike Ewen",
-  "DOB": "",
-  "01/05/2024": "D",
+  "DOB": "16/05/1983",
+  "01/05/2024": "D1",
   "08/05/2024": "L",
   "22/05/2024": "L",
   "29/05/2024": "",
   "05/06/2024": "NC",
   "12/06/2024": "L",
   "19/06/2024": "W",
-  "26/06/2024": "D",
+  "26/06/2024": "D1",
   "03/07/2024": "L",
   "10/07/2024": "L",
   "17/07/2024": "",
@@ -551,7 +551,7 @@ const rawData: RawPlayerData[] = [
   "05/06/2024": "",
   "12/06/2024": "",
   "19/06/2024": "",
-  "26/06/2024": "D",
+  "26/06/2024": "D1",
   "03/07/2024": "",
   "10/07/2024": "",
   "17/07/2024": "",
@@ -570,15 +570,15 @@ const rawData: RawPlayerData[] = [
   },
   {
   "Player": "John Polling",
-  "DOB": "",
-  "01/05/2024": "D",
+  "DOB": "07/03/1979",
+  "01/05/2024": "D1",
   "08/05/2024": "",
   "22/05/2024": "L",
   "29/05/2024": "L",
   "05/06/2024": "",
   "12/06/2024": "L",
   "19/06/2024": "L",
-  "26/06/2024": "D",
+  "26/06/2024": "D2",
   "03/07/2024": "L",
   "10/07/2024": "L",
   "17/07/2024": "NC",
@@ -597,7 +597,7 @@ const rawData: RawPlayerData[] = [
   },
   {
   "Player": "Calvin Trevor",
-  "DOB": "",
+  "DOB": "27/11/1995",
   "01/05/2024": "",
   "08/05/2024": "",
   "22/05/2024": "",
@@ -624,7 +624,7 @@ const rawData: RawPlayerData[] = [
   },
   {
   "Player": "Marc Jobling",
-  "DOB": "",
+  "DOB": "26/06/1973",
   "01/05/2024": "",
   "08/05/2024": "L",
   "22/05/2024": "",
@@ -651,7 +651,7 @@ const rawData: RawPlayerData[] = [
   },
   {
   "Player": "Rob Goddard",
-  "DOB": "",
+  "DOB": "15/07/1967",
   "01/05/2024": "",
   "08/05/2024": "",
   "22/05/2024": "",
@@ -678,7 +678,7 @@ const rawData: RawPlayerData[] = [
   },
   {
   "Player": "Tom O'Brien",
-  "DOB": "",
+  "DOB": "01/04/1983",
   "01/05/2024": "",
   "08/05/2024": "",
   "22/05/2024": "",
@@ -732,7 +732,7 @@ const rawData: RawPlayerData[] = [
   },
   {
   "Player": "John Cant",
-  "DOB": "",
+  "DOB": "10/08/1990",
   "01/05/2024": "",
   "08/05/2024": "",
   "22/05/2024": "",
@@ -759,7 +759,7 @@ const rawData: RawPlayerData[] = [
   },
   {
   "Player": "Nathan Dennison",
-  "DOB": "",
+  "DOB": "01/01/1992",
   "01/05/2024": "",
   "08/05/2024": "",
   "22/05/2024": "",
@@ -787,7 +787,7 @@ const rawData: RawPlayerData[] = [
   {
   "Player": "Total Players",
   "DOB": "",
-  "01/05/2024": "1",
+  "01/05/2024": "26",
   "08/05/2024": "10",
   "22/05/2024": "10",
   "29/05/2024": "10",
@@ -815,9 +815,9 @@ const rawData: RawPlayerData[] = [
   "Player": "Goal Difference",
   "DOB": "",
   "01/05/2024": "0",
-  "08/05/2024": "",
-  "22/05/2024": "",
-  "29/05/2024": "",
+  "08/05/2024": "2",
+  "22/05/2024": "2",
+  "29/05/2024": "2",
   "05/06/2024": "0",
   "12/06/2024": "4",
   "19/06/2024": "1",
@@ -865,8 +865,19 @@ const rawData: RawPlayerData[] = [
   "Total points": "",
   "Points per game": ""
   }
-  ]
+]
 
+function calculateAge(dob: string | null): number | null {
+  if (!dob) return null;
+  const birthDate = new Date(dob.split('/').reverse().join('-'));
+  const today = new Date();
+  let age = today.getFullYear() - birthDate.getFullYear();
+  const monthDiff = today.getMonth() - birthDate.getMonth();
+  if (monthDiff < 0 || (monthDiff === 0 && today.getDate() < birthDate.getDate())) {
+    age--;
+  }
+  return age;
+}
 
 export async function fetchFootballData(): Promise<FootballData> {
   // Simulate API delay
@@ -874,119 +885,76 @@ export async function fetchFootballData(): Promise<FootballData> {
 
   const players: Player[] = []
   const matches: Match[] = []
+  const processedPlayers: ProcessedPlayer[] = []
+  const processedMatches: Match[] = []
 
   const datesToProcess = Object.keys(rawData[0]).filter(key => 
     key.match(/^\d{2}\/\d{2}\/\d{4}$/) && key !== 'DOB'
   )
 
-  // Process players (keeping backwards compatibility)
+  // Process players
   rawData.forEach((item, index) => {
     if (item.Player !== "Total Players" && item.Player !== "Goal Difference" && item.Player !== "Who Picked Teams") {
+      const player: ProcessedPlayer = {
+        Player: item.Player,
+        DOB: item.DOB || null,
+        Age: calculateAge(item.DOB),
+        GamesPlayed: parseInt(item['Games Played']) || 0,
+        Wins: parseInt(item['Wins']) || 0,
+        Draws: parseInt(item['Draws']) || 0,
+        Losses: parseInt(item['Losses']) || 0,
+        TotalPoints: parseInt(item['Total points']) || 0,
+        PointsPerGame: parseFloat(item['Points per game']) || 0
+      }
+      processedPlayers.push(player)
+
+      // Keeping the original player structure for backwards compatibility
       players.push({
         id: index.toString(),
         name: item.Player,
-        played: parseInt(item['Games Played']),
-        won: parseInt(item['Wins']),
-        drawn: parseInt(item['Draws']),
-        lost: parseInt(item['Losses']),
-        points: parseInt(item['Total points']),
-        pointsPerGame: parseFloat(item['Points per game'])
+        played: player.GamesPlayed,
+        won: player.Wins,
+        drawn: player.Draws,
+        lost: player.Losses,
+        points: player.TotalPoints,
+        pointsPerGame: player.PointsPerGame
       })
     }
-  })
-
-  // Process matches (keeping backwards compatibility)
-  datesToProcess.forEach(date => {
-    const teamA: string[] = []
-    const teamB: string[] = []
-    let scoreA = 0
-    let scoreB = 0
-
-    rawData.forEach(item => {
-      if (item.Player !== "Total Players" && item.Player !== "Goal Difference" && item.Player !== "Who Picked Teams") {
-        if (item[date] === 'W') {
-          teamA.push(item.Player)
-          scoreA++
-        } else if (item[date] === 'L') {
-          teamB.push(item.Player)
-          scoreB++
-        }
-      }
-    })
-
-    if (teamA.length > 0 || teamB.length > 0) {
-      matches.push({
-        id: date,
-        date: date,
-        teamA: teamA,
-        teamB: teamB,
-        score: `${scoreA}-${scoreB}`
-      })
-    }
-  })
-
-  // New data processing logic
-  const processedPlayers: ProcessedPlayer[] = []
-  const processedMatches: Match[] = []
-
-  // Process players
-  rawData.forEach(row => {
-    if (["Total Players", "Goal Difference", "Who Picked Teams"].includes(row.Player)) {
-      return // Skip these rows for player processing
-    }
-
-    processedPlayers.push({
-      Player: row.Player,
-      DOB: row.DOB || null,
-      GamesPlayed: parseInt(row["Games Played"]) || 0,
-      Wins: parseInt(row["Wins"]) || 0,
-      Draws: parseInt(row["Draws"]) || 0,
-      Losses: parseInt(row["Losses"]) || 0,
-      TotalPoints: parseInt(row["Total points"]) || 0,
-      PointsPerGame: parseFloat(row["Points per game"]) || 0
-    })
   })
 
   // Process matches
   datesToProcess.forEach(date => {
-    const totalPlayersRow = rawData.find(row => row.Player === "Total Players")
-    const goalDifferenceRow = rawData.find(row => row.Player === "Goal Difference")
-    const whoPickedTeamsRow = rawData.find(row => row.Player === "Who Picked Teams")
-
-    if (!totalPlayersRow || !goalDifferenceRow || !whoPickedTeamsRow) return
-
     const teamA: string[] = []
     const teamB: string[] = []
+    let actualPlayerCount = 0
 
-    rawData.forEach(row => {
-      if (["Total Players", "Goal Difference", "Who Picked Teams"].includes(row.Player)) return
-      if (row[date] === "W" || row[date] === "D") {
-        teamA.push(row.Player)
-      } else if (row[date] === "L") {
-        teamB.push(row.Player)
+    rawData.forEach(item => {
+      if (item.Player !== "Total Players" && item.Player !== "Goal Difference" && item.Player !== "Who Picked Teams") {
+        if (item[date] === 'W' || item[date] === 'D1') {
+          teamA.push(item.Player)
+          actualPlayerCount++
+        } else if (item[date] === 'L' || item[date] === 'D2') {
+          teamB.push(item.Player)
+          actualPlayerCount++
+        }
       }
     })
 
-    // Randomly distribute players for draws
-    if (teamA.length === teamB.length) {
-      const allPlayers = [...teamA, ...teamB]
-      teamA.length = 0
-      teamB.length = 0
-      allPlayers.sort(() => Math.random() - 0.5)
-      teamA.push(...allPlayers.slice(0, allPlayers.length / 2))
-      teamB.push(...allPlayers.slice(allPlayers.length / 2))
-    }
+    const goalDifferenceRow = rawData.find(row => row.Player === "Goal Difference")
+    const whoPickedTeamsRow = rawData.find(row => row.Player === "Who Picked Teams")
 
-    processedMatches.push({
+    const match: Match = {
       id: date,
       date: date,
       teamA: teamA,
       teamB: teamB,
-      score: `${teamA.length}-${teamB.length}`,
-      TotalPlayers: parseInt(totalPlayersRow[date]) || 0,
-      GoalDifference: parseInt(goalDifferenceRow[date]) || 0,
-      WhoPickedTeams: whoPickedTeamsRow[date]
-    })
+      TotalPlayers: actualPlayerCount,
+      GoalDifference: goalDifferenceRow ? parseInt(goalDifferenceRow[date]) || 0 : 0,
+      WhoPickedTeams: whoPickedTeamsRow ? whoPickedTeamsRow[date] : ''
+    }
+
+    processedMatches.push(match)
+    matches.push(match)  // Keeping the original matches array for backwards compatibility
   })
 
   return {
@@ -994,6 +962,6 @@ export async function fetchFootballData(): Promise<FootballData> {
     matches: matches,
     processedPlayers: processedPlayers,
     processedMatches: processedMatches,
-    rawData: rawData // Add this line
+    rawData: rawData
   }
 }
