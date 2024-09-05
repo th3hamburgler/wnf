@@ -37,11 +37,22 @@ const formatDate = (date: Date): string => {
   return `${day}/${month}/${year}`;
 };
 
+const getWeeksAgo = (date: Date): string => {
+  const now = new Date();
+  const diffTime = Math.abs(now.getTime() - date.getTime());
+  const diffWeeks = Math.floor(diffTime / (1000 * 60 * 60 * 24 * 7));
+  return diffWeeks === 1 ? "1 week ago" : `${diffWeeks} weeks ago`;
+};
+
 const getPPGColor = (ppg: number) => {
   if (ppg >= 0 && ppg < 1) return "bg-red-500 text-white";
   if (ppg >= 1 && ppg < 2) return "bg-amber-500 text-white";
   if (ppg >= 2 && ppg <= 3) return "bg-green-500 text-white";
   return "bg-gray-500 text-white";
+};
+
+const formatStreak = (streak: number): string => {
+  return `${streak} ${streak === 1 ? "game" : "games"}`;
 };
 
 export default function PlayerStats({ players, matches }: PlayerStatsProps) {
@@ -63,61 +74,83 @@ export default function PlayerStats({ players, matches }: PlayerStatsProps) {
 
     matches.forEach((match) => {
       const date = parseDate(match.date);
-      if (!firstAppearance || date < firstAppearance) firstAppearance = date;
-      if (!lastAppearance || date > lastAppearance) lastAppearance = date;
+      const playerInMatch =
+        match.teamA.includes(player.Player) ||
+        match.teamB.includes(player.Player);
+      const playerResult = playerInMatch
+        ? match.teamA.includes(player.Player)
+          ? match.GoalDifference > 0
+            ? "W"
+            : match.GoalDifference < 0
+            ? "L"
+            : "D"
+          : match.GoalDifference < 0
+          ? "W"
+          : match.GoalDifference > 0
+          ? "L"
+          : "D"
+        : null;
 
-      if (match.teamA.includes(player.Player)) {
-        match.teamA.forEach((teammate) => {
-          if (teammate !== player.Player) {
-            teammateCounts[teammate] = (teammateCounts[teammate] || 0) + 1;
-          }
-        });
-        match.teamB.forEach((opponent) => {
-          opponentCounts[opponent] = (opponentCounts[opponent] || 0) + 1;
-        });
-        if (match.GoalDifference > 0) {
+      if (
+        playerResult &&
+        (playerResult === "W" ||
+          playerResult === "L" ||
+          playerResult === "D1" ||
+          playerResult === "D2")
+      ) {
+        if (!firstAppearance) firstAppearance = date;
+        lastAppearance = date;
+
+        if (match.teamA.includes(player.Player)) {
+          match.teamA.forEach((teammate) => {
+            if (teammate !== player.Player) {
+              teammateCounts[teammate] = (teammateCounts[teammate] || 0) + 1;
+            }
+          });
+          match.teamB.forEach((opponent) => {
+            opponentCounts[opponent] = (opponentCounts[opponent] || 0) + 1;
+          });
+        } else if (match.teamB.includes(player.Player)) {
+          match.teamB.forEach((teammate) => {
+            if (teammate !== player.Player) {
+              teammateCounts[teammate] = (teammateCounts[teammate] || 0) + 1;
+            }
+          });
+          match.teamA.forEach((opponent) => {
+            opponentCounts[opponent] = (opponentCounts[opponent] || 0) + 1;
+          });
+        }
+
+        if (playerResult === "W") {
           winStreak++;
           loseStreak = 0;
-        } else if (match.GoalDifference < 0) {
+        } else if (playerResult === "L") {
           loseStreak++;
           winStreak = 0;
         } else {
           winStreak = 0;
           loseStreak = 0;
         }
-      } else if (match.teamB.includes(player.Player)) {
-        match.teamB.forEach((teammate) => {
-          if (teammate !== player.Player) {
-            teammateCounts[teammate] = (teammateCounts[teammate] || 0) + 1;
-          }
-        });
-        match.teamA.forEach((opponent) => {
-          opponentCounts[opponent] = (opponentCounts[opponent] || 0) + 1;
-        });
-        if (match.GoalDifference < 0) {
-          winStreak++;
-          loseStreak = 0;
-        } else if (match.GoalDifference > 0) {
-          loseStreak++;
-          winStreak = 0;
-        } else {
-          winStreak = 0;
-          loseStreak = 0;
-        }
+
+        maxWinStreak = Math.max(maxWinStreak, winStreak);
+        maxLoseStreak = Math.max(maxLoseStreak, loseStreak);
       }
-
-      maxWinStreak = Math.max(maxWinStreak, winStreak);
-      maxLoseStreak = Math.max(maxLoseStreak, loseStreak);
     });
 
-    const mostFrequentTeammate = Object.entries(teammateCounts).reduce(
-      (a, b) => (a[1] > b[1] ? a : b),
-      ["N/A", 0]
-    )[0];
-    const mostFrequentOpponent = Object.entries(opponentCounts).reduce(
-      (a, b) => (a[1] > b[1] ? a : b),
-      ["N/A", 0]
-    )[0];
+    const formatPlayerList = (counts: { [key: string]: number }) => {
+      const sortedCounts = Object.entries(counts).sort((a, b) => b[1] - a[1]);
+      if (sortedCounts.length === 0) {
+        return "N/A";
+      }
+      const maxCount = sortedCounts[0][1];
+      const players = sortedCounts
+        .filter(([, count]) => count === maxCount)
+        .map(([name, count]) => `${name} (${count})`);
+      return players.join(", ");
+    };
+
+    const mostFrequentTeammate = formatPlayerList(teammateCounts);
+    const mostFrequentOpponent = formatPlayerList(opponentCounts);
 
     const appearancePercentage = (player.GamesPlayed / matches.length) * 100;
     const daysActive =
@@ -153,12 +186,16 @@ export default function PlayerStats({ players, matches }: PlayerStatsProps) {
       mostFrequentTeammate,
       mostFrequentOpponent,
       appearancePercentage: appearancePercentage.toFixed(2),
-      firstAppearance: firstAppearance ? formatDate(firstAppearance) : "N/A",
-      lastAppearance: lastAppearance ? formatDate(lastAppearance) : "N/A",
+      firstAppearance: firstAppearance
+        ? `${formatDate(firstAppearance)} (${getWeeksAgo(firstAppearance)})`
+        : "N/A",
+      lastAppearance: lastAppearance
+        ? `${formatDate(lastAppearance)} (${getWeeksAgo(lastAppearance)})`
+        : "N/A",
       daysActive,
       daysUntilBirthday,
-      longestWinningStreak: maxWinStreak,
-      longestLosingStreak: maxLoseStreak,
+      longestWinningStreak: formatStreak(maxWinStreak),
+      longestLosingStreak: formatStreak(maxLoseStreak),
     };
   };
 
@@ -230,11 +267,11 @@ export default function PlayerStats({ players, matches }: PlayerStatsProps) {
             <Table>
               <TableBody>
                 <TableRow>
-                  <TableHead>Most Frequent Teammate</TableHead>
+                  <TableHead>Most Frequent Teammate(s)</TableHead>
                   <TableCell>{playerStats.mostFrequentTeammate}</TableCell>
                 </TableRow>
                 <TableRow>
-                  <TableHead>Most Frequent Opponent</TableHead>
+                  <TableHead>Most Frequent Opponent(s)</TableHead>
                   <TableCell>{playerStats.mostFrequentOpponent}</TableCell>
                 </TableRow>
                 <TableRow>
