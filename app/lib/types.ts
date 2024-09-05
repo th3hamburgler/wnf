@@ -1,6 +1,7 @@
 export interface Player {
   id: string
   name: string
+  age: number
   played: number
   won: number
   drawn: number
@@ -15,6 +16,10 @@ export interface Match {
   teamA: string[]
   teamB: string[]
   score: string
+  [playerName: string]: {
+    'Points per game': string
+    // ... other player stats
+  } | string | string[] // to account for other properties
 }
 
 export interface FootballData {
