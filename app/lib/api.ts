@@ -1,6 +1,6 @@
-import { FootballData, Player, Match } from './types'
+import { FootballData, Player, Match, RawPlayerData, ProcessedPlayer } from './types'
 
-const rawData = [
+const rawData: RawPlayerData[] = [
   {
   "Player": "Lee Smith",
   "DOB": "",
@@ -867,6 +867,7 @@ const rawData = [
   }
   ]
 
+
 export async function fetchFootballData(): Promise<FootballData> {
   // Simulate API delay
   await new Promise(resolve => setTimeout(resolve, 500))
@@ -878,6 +879,7 @@ export async function fetchFootballData(): Promise<FootballData> {
     key.match(/^\d{2}\/\d{2}\/\d{4}$/) && key !== 'DOB'
   )
 
+  // Process players (keeping backwards compatibility)
   rawData.forEach((item, index) => {
     if (item.Player !== "Total Players" && item.Player !== "Goal Difference" && item.Player !== "Who Picked Teams") {
       players.push({
@@ -893,6 +895,7 @@ export async function fetchFootballData(): Promise<FootballData> {
     }
   })
 
+  // Process matches (keeping backwards compatibility)
   datesToProcess.forEach(date => {
     const teamA: string[] = []
     const teamB: string[] = []
@@ -922,8 +925,75 @@ export async function fetchFootballData(): Promise<FootballData> {
     }
   })
 
+  // New data processing logic
+  const processedPlayers: ProcessedPlayer[] = []
+  const processedMatches: Match[] = []
+
+  // Process players
+  rawData.forEach(row => {
+    if (["Total Players", "Goal Difference", "Who Picked Teams"].includes(row.Player)) {
+      return // Skip these rows for player processing
+    }
+
+    processedPlayers.push({
+      Player: row.Player,
+      DOB: row.DOB || null,
+      GamesPlayed: parseInt(row["Games Played"]) || 0,
+      Wins: parseInt(row["Wins"]) || 0,
+      Draws: parseInt(row["Draws"]) || 0,
+      Losses: parseInt(row["Losses"]) || 0,
+      TotalPoints: parseInt(row["Total points"]) || 0,
+      PointsPerGame: parseFloat(row["Points per game"]) || 0
+    })
+  })
+
+  // Process matches
+  datesToProcess.forEach(date => {
+    const totalPlayersRow = rawData.find(row => row.Player === "Total Players")
+    const goalDifferenceRow = rawData.find(row => row.Player === "Goal Difference")
+    const whoPickedTeamsRow = rawData.find(row => row.Player === "Who Picked Teams")
+
+    if (!totalPlayersRow || !goalDifferenceRow || !whoPickedTeamsRow) return
+
+    const teamA: string[] = []
+    const teamB: string[] = []
+
+    rawData.forEach(row => {
+      if (["Total Players", "Goal Difference", "Who Picked Teams"].includes(row.Player)) return
+      if (row[date] === "W" || row[date] === "D") {
+        teamA.push(row.Player)
+      } else if (row[date] === "L") {
+        teamB.push(row.Player)
+      }
+    })
+
+    // Randomly distribute players for draws
+    if (teamA.length === teamB.length) {
+      const allPlayers = [...teamA, ...teamB]
+      teamA.length = 0
+      teamB.length = 0
+      allPlayers.sort(() => Math.random() - 0.5)
+      teamA.push(...allPlayers.slice(0, allPlayers.length / 2))
+      teamB.push(...allPlayers.slice(allPlayers.length / 2))
+    }
+
+    processedMatches.push({
+      id: date,
+      date: date,
+      teamA: teamA,
+      teamB: teamB,
+      score: `${teamA.length}-${teamB.length}`,
+      TotalPlayers: parseInt(totalPlayersRow[date]) || 0,
+      GoalDifference: parseInt(goalDifferenceRow[date]) || 0,
+      WhoPickedTeams: whoPickedTeamsRow[date]
+    })
+  })
+
   return {
     players: players,
-    matches: matches
+    matches: matches,
+    processedPlayers: processedPlayers,
+    processedMatches: processedMatches,
+    rawData: rawData // Add this line
   }
 }

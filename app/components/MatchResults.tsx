@@ -29,7 +29,7 @@ export default function MatchResults({ matches }: MatchResultsProps) {
 
   useEffect(() => {
     if (currentMatch) {
-      console.log("Current Match:", JSON.stringify(currentMatch, null, 2));
+      // console.log("Current Match:", JSON.stringify(currentMatch, null, 2));
       const stats: Record<string, string> = {};
 
       // Attempt to find playerStats in different possible locations
@@ -52,7 +52,7 @@ export default function MatchResults({ matches }: MatchResultsProps) {
         });
       }
 
-      console.log("Processed Player Stats:", stats);
+      // console.log("Processed Player Stats:", stats);
       setPlayerStats(stats);
     }
   }, [currentMatch]);
