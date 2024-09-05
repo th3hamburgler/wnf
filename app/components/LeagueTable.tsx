@@ -21,7 +21,7 @@ type SortKey = keyof ProcessedPlayer;
 type SortOrder = "asc" | "desc";
 
 export default function LeagueTable({ players }: LeagueTableProps) {
-  const [sortKey, setSortKey] = useState<SortKey>("TotalPoints");
+  const [sortKey, setSortKey] = useState<SortKey>("PointsPerGame");
   const [sortOrder, setSortOrder] = useState<SortOrder>("desc");
 
   const sortedPlayers = [...players].sort((a, b) => {
