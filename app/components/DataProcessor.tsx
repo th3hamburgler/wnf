@@ -1,8 +1,7 @@
 "use client";
 
-import React, { useState, useEffect } from "react";
-import { fetchFootballData } from "../lib/api";
-import { FootballData, ProcessedPlayer, Match } from "../lib/types";
+import React from "react";
+import { ProcessedPlayer, Match, RawPlayerData } from "../lib/types";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import {
@@ -15,39 +14,17 @@ import {
 } from "@/components/ui/table";
 import { Badge } from "@/components/ui/badge";
 
-export default function DataProcessor() {
-  const [footballData, setFootballData] = useState<FootballData | null>(null);
-  const [isLoading, setIsLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
+interface DataProcessorProps {
+  rawData: RawPlayerData[];
+  processedMatches: Match[];
+  processedPlayers: ProcessedPlayer[];
+}
 
-  useEffect(() => {
-    async function loadData() {
-      try {
-        const data = await fetchFootballData();
-        setFootballData(data);
-      } catch (err) {
-        setError("Failed to load data");
-        console.error(err);
-      } finally {
-        setIsLoading(false);
-      }
-    }
-
-    loadData();
-  }, []);
-
-  if (isLoading) {
-    return <div className="p-4 text-center">Loading data...</div>;
-  }
-
-  if (error) {
-    return <div className="p-4 text-center text-red-500">{error}</div>;
-  }
-
-  if (!footballData) {
-    return <div className="p-4 text-center">No data available</div>;
-  }
-
+export default function DataProcessor({
+  rawData,
+  processedMatches,
+  processedPlayers,
+}: DataProcessorProps) {
   const renderPlayerTable = (players: ProcessedPlayer[]) => (
     <Table>
       <TableHeader>
@@ -137,14 +114,14 @@ export default function DataProcessor() {
             <TabsTrigger value="rawData">Raw Data</TabsTrigger>
           </TabsList>
           <TabsContent value="processedPlayers">
-            {renderPlayerTable(footballData.processedPlayers)}
+            {renderPlayerTable(processedPlayers)}
           </TabsContent>
           <TabsContent value="processedMatches">
-            {renderMatchTable(footballData.processedMatches)}
+            {renderMatchTable(processedMatches)}
           </TabsContent>
           <TabsContent value="rawData">
             <pre className="bg-gray-100 p-4 rounded-md overflow-auto max-h-96 text-xs">
-              {JSON.stringify(footballData.rawData, null, 2)}
+              {JSON.stringify(rawData, null, 2)}
             </pre>
           </TabsContent>
         </Tabs>
