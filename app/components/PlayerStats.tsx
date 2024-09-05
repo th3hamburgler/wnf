@@ -45,9 +45,7 @@ const getPPGColor = (ppg: number) => {
 };
 
 export default function PlayerStats({ players, matches }: PlayerStatsProps) {
-  const [selectedPlayer, setSelectedPlayer] = useState<string>(
-    players[0]?.Player || ""
-  );
+  const [selectedPlayer, setSelectedPlayer] = useState<string | null>(null);
 
   const sortedPlayers = useMemo(() => {
     return [...players].sort((a, b) => a.Player.localeCompare(b.Player));
@@ -164,21 +162,12 @@ export default function PlayerStats({ players, matches }: PlayerStatsProps) {
     };
   };
 
-  const currentPlayer = players.find((p) => p.Player === selectedPlayer);
+  const currentPlayer = selectedPlayer
+    ? players.find((p) => p.Player === selectedPlayer)
+    : null;
   const playerStats = currentPlayer
     ? calculatePlayerStats(currentPlayer)
     : null;
-
-  if (!currentPlayer || !playerStats) {
-    return <div>No player data available</div>;
-  }
-
-  const StarSignIcon =
-    currentPlayer.StarSign && currentPlayer.StarSign in ZodiacIcons
-      ? ZodiacIcons[currentPlayer.StarSign as keyof typeof ZodiacIcons]
-      : User;
-
-  const ppgColor = getPPGColor(currentPlayer.PointsPerGame);
 
   return (
     <Card className="w-full">
@@ -186,7 +175,7 @@ export default function PlayerStats({ players, matches }: PlayerStatsProps) {
         <CardTitle className="text-2xl font-semibold">
           Player Statistics
         </CardTitle>
-        <Select value={selectedPlayer} onValueChange={setSelectedPlayer}>
+        <Select value={selectedPlayer || ""} onValueChange={setSelectedPlayer}>
           <SelectTrigger className="w-[180px]">
             <SelectValue placeholder="Select a player" />
           </SelectTrigger>
@@ -200,68 +189,92 @@ export default function PlayerStats({ players, matches }: PlayerStatsProps) {
         </Select>
       </CardHeader>
       <CardContent>
-        <div className="flex items-center space-x-4 mb-6">
-          <div className="bg-gray-200 rounded-full p-4">
-            <StarSignIcon className="h-16 w-16 text-gray-500" />
-          </div>
-          <div className="flex-grow">
-            <h3 className="text-xl font-semibold">{currentPlayer.Player}</h3>
-            <p className="text-sm text-gray-500">
-              {currentPlayer.StarSign || "Unknown Star Sign"}
+        {currentPlayer && playerStats ? (
+          <>
+            <div className="flex items-center space-x-4 mb-6">
+              <div className="bg-gray-200 rounded-full p-4">
+                {currentPlayer.StarSign &&
+                currentPlayer.StarSign in ZodiacIcons ? (
+                  React.createElement(
+                    ZodiacIcons[
+                      currentPlayer.StarSign as keyof typeof ZodiacIcons
+                    ],
+                    { className: "h-16 w-16 text-gray-500" }
+                  )
+                ) : (
+                  <User className="h-16 w-16 text-gray-500" />
+                )}
+              </div>
+              <div className="flex-grow">
+                <h3 className="text-xl font-semibold">
+                  {currentPlayer.Player}
+                </h3>
+                <p className="text-sm text-gray-500">
+                  {currentPlayer.StarSign || "Unknown Star Sign"}
+                </p>
+              </div>
+              <div
+                className={`flex flex-col items-center justify-center rounded-full w-24 h-24 ${getPPGColor(
+                  currentPlayer.PointsPerGame
+                )}`}
+              >
+                <span className="text-2xl font-bold">
+                  {currentPlayer.TotalPoints}pts
+                </span>
+                <span className="text-sm">
+                  {currentPlayer.PointsPerGame.toFixed(2)}
+                </span>
+              </div>
+            </div>
+
+            <Table>
+              <TableBody>
+                <TableRow>
+                  <TableHead>Most Frequent Teammate</TableHead>
+                  <TableCell>{playerStats.mostFrequentTeammate}</TableCell>
+                </TableRow>
+                <TableRow>
+                  <TableHead>Most Frequent Opponent</TableHead>
+                  <TableCell>{playerStats.mostFrequentOpponent}</TableCell>
+                </TableRow>
+                <TableRow>
+                  <TableHead>Appearance %</TableHead>
+                  <TableCell>{playerStats.appearancePercentage}%</TableCell>
+                </TableRow>
+                <TableRow>
+                  <TableHead>First Appearance</TableHead>
+                  <TableCell>{playerStats.firstAppearance}</TableCell>
+                </TableRow>
+                <TableRow>
+                  <TableHead>Last Appearance</TableHead>
+                  <TableCell>{playerStats.lastAppearance}</TableCell>
+                </TableRow>
+                <TableRow>
+                  <TableHead>Days Active</TableHead>
+                  <TableCell>{playerStats.daysActive}</TableCell>
+                </TableRow>
+                <TableRow>
+                  <TableHead>Days Until Birthday</TableHead>
+                  <TableCell>{playerStats.daysUntilBirthday}</TableCell>
+                </TableRow>
+                <TableRow>
+                  <TableHead>Longest Winning Streak</TableHead>
+                  <TableCell>{playerStats.longestWinningStreak}</TableCell>
+                </TableRow>
+                <TableRow>
+                  <TableHead>Longest Losing Streak</TableHead>
+                  <TableCell>{playerStats.longestLosingStreak}</TableCell>
+                </TableRow>
+              </TableBody>
+            </Table>
+          </>
+        ) : (
+          <div className="text-center py-8">
+            <p className="text-lg text-gray-500">
+              Select a player to view their statistics
             </p>
           </div>
-          <div
-            className={`flex flex-col items-center justify-center rounded-full w-24 h-24 ${ppgColor}`}
-          >
-            <span className="text-2xl font-bold">
-              {currentPlayer.TotalPoints}pts
-            </span>
-            <span className="text-sm">
-              {currentPlayer.PointsPerGame.toFixed(2)}
-            </span>
-          </div>
-        </div>
-
-        <Table>
-          <TableBody>
-            <TableRow>
-              <TableHead>Most Frequent Teammate</TableHead>
-              <TableCell>{playerStats.mostFrequentTeammate}</TableCell>
-            </TableRow>
-            <TableRow>
-              <TableHead>Most Frequent Opponent</TableHead>
-              <TableCell>{playerStats.mostFrequentOpponent}</TableCell>
-            </TableRow>
-            <TableRow>
-              <TableHead>Appearance %</TableHead>
-              <TableCell>{playerStats.appearancePercentage}%</TableCell>
-            </TableRow>
-            <TableRow>
-              <TableHead>First Appearance</TableHead>
-              <TableCell>{playerStats.firstAppearance}</TableCell>
-            </TableRow>
-            <TableRow>
-              <TableHead>Last Appearance</TableHead>
-              <TableCell>{playerStats.lastAppearance}</TableCell>
-            </TableRow>
-            <TableRow>
-              <TableHead>Days Active</TableHead>
-              <TableCell>{playerStats.daysActive}</TableCell>
-            </TableRow>
-            <TableRow>
-              <TableHead>Days Until Birthday</TableHead>
-              <TableCell>{playerStats.daysUntilBirthday}</TableCell>
-            </TableRow>
-            <TableRow>
-              <TableHead>Longest Winning Streak</TableHead>
-              <TableCell>{playerStats.longestWinningStreak}</TableCell>
-            </TableRow>
-            <TableRow>
-              <TableHead>Longest Losing Streak</TableHead>
-              <TableCell>{playerStats.longestLosingStreak}</TableCell>
-            </TableRow>
-          </TableBody>
-        </Table>
+        )}
       </CardContent>
     </Card>
   );
