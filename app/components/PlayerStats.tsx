@@ -25,18 +25,23 @@ interface PlayerStatsProps {
   matches: Match[];
 }
 
-// Custom date parsing function for DD/MM/YYYY format
 const parseDate = (dateString: string): Date => {
   const [day, month, year] = dateString.split("/").map(Number);
   return new Date(year, month - 1, day);
 };
 
-// Custom date formatting function
 const formatDate = (date: Date): string => {
   const day = date.getDate().toString().padStart(2, "0");
   const month = (date.getMonth() + 1).toString().padStart(2, "0");
   const year = date.getFullYear();
   return `${day}/${month}/${year}`;
+};
+
+const getPPGColor = (ppg: number) => {
+  if (ppg >= 0 && ppg < 1) return "bg-red-500 text-white";
+  if (ppg >= 1 && ppg < 2) return "bg-amber-500 text-white";
+  if (ppg >= 2 && ppg <= 3) return "bg-green-500 text-white";
+  return "bg-gray-500 text-white";
 };
 
 export default function PlayerStats({ players, matches }: PlayerStatsProps) {
@@ -172,6 +177,8 @@ export default function PlayerStats({ players, matches }: PlayerStatsProps) {
       ? ZodiacIcons[currentPlayer.StarSign as keyof typeof ZodiacIcons]
       : User;
 
+  const ppgColor = getPPGColor(currentPlayer.PointsPerGame);
+
   return (
     <Card className="w-full">
       <CardHeader className="flex flex-row items-center justify-between">
@@ -196,24 +203,26 @@ export default function PlayerStats({ players, matches }: PlayerStatsProps) {
           <div className="bg-gray-200 rounded-full p-4">
             <StarSignIcon className="h-16 w-16 text-gray-500" />
           </div>
-          <div>
+          <div className="flex-grow">
             <h3 className="text-xl font-semibold">{currentPlayer.Player}</h3>
             <p className="text-sm text-gray-500">
               {currentPlayer.StarSign || "Unknown Star Sign"}
             </p>
           </div>
+          <div
+            className={`flex flex-col items-center justify-center rounded-full w-24 h-24 ${ppgColor}`}
+          >
+            <span className="text-2xl font-bold">
+              {currentPlayer.TotalPoints}pts
+            </span>
+            <span className="text-sm">
+              {currentPlayer.PointsPerGame.toFixed(2)}
+            </span>
+          </div>
         </div>
 
         <Table>
           <TableBody>
-            <TableRow>
-              <TableHead>Total Points</TableHead>
-              <TableCell>{currentPlayer.TotalPoints}</TableCell>
-            </TableRow>
-            <TableRow>
-              <TableHead>Points per Game</TableHead>
-              <TableCell>{currentPlayer.PointsPerGame.toFixed(2)}</TableCell>
-            </TableRow>
             <TableRow>
               <TableHead>Most Frequent Teammate</TableHead>
               <TableCell>{playerStats.mostFrequentTeammate}</TableCell>
