@@ -246,7 +246,7 @@ export default function MatchResults({ matches, players }: MatchResultsProps) {
             </Badge>
             <div className="mt-4 flex justify-center">
               <Image
-                src="/placeholder.svg?height=300&width=400"
+                src="/images/Diana_Ross_Misses_Penalty.gif"
                 alt="Match Abandoned"
                 width={400}
                 height={300}
