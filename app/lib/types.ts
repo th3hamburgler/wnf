@@ -35,6 +35,7 @@ export interface Match {
   TotalPlayers: number;
   GoalDifference: number;
   WhoPickedTeams: string;
+  abandoned: boolean;
 }
 
 export interface FootballData {

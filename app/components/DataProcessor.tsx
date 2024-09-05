@@ -13,6 +13,7 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
+import { Badge } from "@/components/ui/badge";
 
 export default function DataProcessor() {
   const [footballData, setFootballData] = useState<FootballData | null>(null);
@@ -90,6 +91,7 @@ export default function DataProcessor() {
           <TableHead>Total Players</TableHead>
           <TableHead>Goal Difference</TableHead>
           <TableHead>Who Picked Teams</TableHead>
+          <TableHead>Status</TableHead>
         </TableRow>
       </TableHeader>
       <TableBody>
@@ -101,6 +103,13 @@ export default function DataProcessor() {
             <TableCell>{match.TotalPlayers}</TableCell>
             <TableCell>{match.GoalDifference}</TableCell>
             <TableCell>{match.WhoPickedTeams}</TableCell>
+            <TableCell>
+              {match.abandoned ? (
+                <Badge variant="destructive">Abandoned</Badge>
+              ) : (
+                <Badge variant="default">Completed</Badge>
+              )}
+            </TableCell>
           </TableRow>
         ))}
       </TableBody>

@@ -866,7 +866,6 @@ const rawData: RawPlayerData[] = [
   "Points per game": ""
   }
 ]
-
 function calculateAge(dob: string | null): number | null {
   if (!dob) return null;
   const birthDate = new Date(dob.split('/').reverse().join('-'));
@@ -927,18 +926,23 @@ export async function fetchFootballData(): Promise<FootballData> {
     const teamA: string[] = []
     const teamB: string[] = []
     let actualPlayerCount = 0
+    let abandoned = true
 
     rawData.forEach(item => {
       if (item.Player !== "Total Players" && item.Player !== "Goal Difference" && item.Player !== "Who Picked Teams") {
         if (item[date] === 'W' || item[date] === 'D1') {
           teamA.push(item.Player)
           actualPlayerCount++
+          abandoned = false
         } else if (item[date] === 'L' || item[date] === 'D2') {
           teamB.push(item.Player)
           actualPlayerCount++
+          abandoned = false
         }
       }
     })
+
+    console.log(abandoned)
 
     const goalDifferenceRow = rawData.find(row => row.Player === "Goal Difference")
     const whoPickedTeamsRow = rawData.find(row => row.Player === "Who Picked Teams")
@@ -950,7 +954,8 @@ export async function fetchFootballData(): Promise<FootballData> {
       teamB: teamB,
       TotalPlayers: actualPlayerCount,
       GoalDifference: goalDifferenceRow ? parseInt(goalDifferenceRow[date]) || 0 : 0,
-      WhoPickedTeams: whoPickedTeamsRow ? whoPickedTeamsRow[date] : ''
+      WhoPickedTeams: whoPickedTeamsRow ? whoPickedTeamsRow[date] : '',
+      abandoned: abandoned
     }
 
     processedMatches.push(match)
