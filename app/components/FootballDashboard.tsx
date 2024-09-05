@@ -10,12 +10,22 @@ export default async function FootballDashboard() {
 
   return (
     <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+      <div className="flex flex-col gap-8">
+        <div>
+          <MatchResults
+            matches={data.processedMatches}
+            players={data.processedPlayers}
+          />
+        </div>
+        <div className="flex-1">
+          <PlayerStats players={data.players} />
+        </div>
+      </div>
+
+      <LeagueTable players={data.players} />
       <div className="col-span-2">
         <DataProcessor />
       </div>
-      <MatchResults matches={data.matches} />
-      <LeagueTable players={data.players} />
-      <PlayerStats players={data.players} />
     </div>
   );
 }

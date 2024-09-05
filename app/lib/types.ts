@@ -14,6 +14,7 @@ export interface ProcessedPlayer {
   Losses: number;
   TotalPoints: number;
   PointsPerGame: number;
+  StarSign: string | null;
 }
 
 export interface Player {
@@ -25,6 +26,7 @@ export interface Player {
   lost: number;
   points: number;
   pointsPerGame: number;
+  starSign: string | null;
 }
 
 export interface Match {

@@ -55,6 +55,7 @@ export default function DataProcessor() {
           <TableHead>Name</TableHead>
           <TableHead>DOB</TableHead>
           <TableHead>Age</TableHead>
+          <TableHead>Star Sign</TableHead>
           <TableHead>Games Played</TableHead>
           <TableHead>Wins</TableHead>
           <TableHead>Draws</TableHead>
@@ -69,6 +70,7 @@ export default function DataProcessor() {
             <TableCell>{player.Player}</TableCell>
             <TableCell>{player.DOB || "N/A"}</TableCell>
             <TableCell>{player.Age !== null ? player.Age : "N/A"}</TableCell>
+            <TableCell>{player.StarSign || "N/A"}</TableCell>
             <TableCell>{player.GamesPlayed}</TableCell>
             <TableCell>{player.Wins}</TableCell>
             <TableCell>{player.Draws}</TableCell>
