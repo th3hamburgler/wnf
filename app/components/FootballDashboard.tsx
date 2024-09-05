@@ -1,7 +1,7 @@
 import React from "react";
 import MatchResults from "./MatchResults";
 import LeagueTable from "./LeagueTable";
-import PlayerStats from "./PlayerStats.tsx";
+import PlayerStats from "./PlayerStats";
 import { fetchFootballData } from "../lib/api";
 import DataProcessor from "./DataProcessor";
 
@@ -18,13 +18,20 @@ export default async function FootballDashboard() {
           />
         </div>
         <div className="flex-1">
-          <PlayerStats players={data.players} />
+          <PlayerStats
+            players={data.processedPlayers}
+            matches={data.processedMatches}
+          />
         </div>
       </div>
 
-      <LeagueTable players={data.players} />
+      <LeagueTable players={data.processedPlayers} />
       <div className="col-span-2">
-        <DataProcessor />
+        <DataProcessor
+          rawData={data.rawData}
+          processedMatches={data.processedMatches}
+          processedPlayers={data.processedPlayers}
+        />
       </div>
     </div>
   );

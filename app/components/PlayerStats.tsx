@@ -1,6 +1,7 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useMemo } from "react";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import {
   Select,
   SelectContent,
@@ -8,48 +9,250 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { Player } from "../lib/types";
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableRow,
+} from "@/components/ui/table";
+import { Match, ProcessedPlayer } from "../lib/types";
+import * as ZodiacIcons from "../icons";
+import { User } from "lucide-react";
 
 interface PlayerStatsProps {
-  players: Player[];
+  players: ProcessedPlayer[];
+  matches: Match[];
 }
 
-export default function PlayerStats({ players }: PlayerStatsProps) {
-  const [selectedPlayer, setSelectedPlayer] = useState<Player | null>(null);
+// Custom date parsing function for DD/MM/YYYY format
+const parseDate = (dateString: string): Date => {
+  const [day, month, year] = dateString.split("/").map(Number);
+  return new Date(year, month - 1, day);
+};
+
+// Custom date formatting function
+const formatDate = (date: Date): string => {
+  const day = date.getDate().toString().padStart(2, "0");
+  const month = (date.getMonth() + 1).toString().padStart(2, "0");
+  const year = date.getFullYear();
+  return `${day}/${month}/${year}`;
+};
+
+export default function PlayerStats({ players, matches }: PlayerStatsProps) {
+  const [selectedPlayer, setSelectedPlayer] = useState<string>(
+    players[0]?.Player || ""
+  );
+
+  const sortedPlayers = useMemo(() => {
+    return [...players].sort((a, b) => a.Player.localeCompare(b.Player));
+  }, [players]);
+
+  const calculatePlayerStats = (player: ProcessedPlayer) => {
+    const teammateCounts: { [key: string]: number } = {};
+    const opponentCounts: { [key: string]: number } = {};
+    let firstAppearance: Date | null = null;
+    let lastAppearance: Date | null = null;
+    let winStreak = 0;
+    let loseStreak = 0;
+    let maxWinStreak = 0;
+    let maxLoseStreak = 0;
+
+    matches.forEach((match) => {
+      const date = parseDate(match.date);
+      if (!firstAppearance || date < firstAppearance) firstAppearance = date;
+      if (!lastAppearance || date > lastAppearance) lastAppearance = date;
+
+      if (match.teamA.includes(player.Player)) {
+        match.teamA.forEach((teammate) => {
+          if (teammate !== player.Player) {
+            teammateCounts[teammate] = (teammateCounts[teammate] || 0) + 1;
+          }
+        });
+        match.teamB.forEach((opponent) => {
+          opponentCounts[opponent] = (opponentCounts[opponent] || 0) + 1;
+        });
+        if (match.GoalDifference > 0) {
+          winStreak++;
+          loseStreak = 0;
+        } else if (match.GoalDifference < 0) {
+          loseStreak++;
+          winStreak = 0;
+        } else {
+          winStreak = 0;
+          loseStreak = 0;
+        }
+      } else if (match.teamB.includes(player.Player)) {
+        match.teamB.forEach((teammate) => {
+          if (teammate !== player.Player) {
+            teammateCounts[teammate] = (teammateCounts[teammate] || 0) + 1;
+          }
+        });
+        match.teamA.forEach((opponent) => {
+          opponentCounts[opponent] = (opponentCounts[opponent] || 0) + 1;
+        });
+        if (match.GoalDifference < 0) {
+          winStreak++;
+          loseStreak = 0;
+        } else if (match.GoalDifference > 0) {
+          loseStreak++;
+          winStreak = 0;
+        } else {
+          winStreak = 0;
+          loseStreak = 0;
+        }
+      }
+
+      maxWinStreak = Math.max(maxWinStreak, winStreak);
+      maxLoseStreak = Math.max(maxLoseStreak, loseStreak);
+    });
+
+    const mostFrequentTeammate = Object.entries(teammateCounts).reduce(
+      (a, b) => (a[1] > b[1] ? a : b),
+      ["N/A", 0]
+    )[0];
+    const mostFrequentOpponent = Object.entries(opponentCounts).reduce(
+      (a, b) => (a[1] > b[1] ? a : b),
+      ["N/A", 0]
+    )[0];
+
+    const appearancePercentage = (player.GamesPlayed / matches.length) * 100;
+    const daysActive =
+      lastAppearance && firstAppearance
+        ? Math.floor(
+            (lastAppearance.getTime() - firstAppearance.getTime()) /
+              (1000 * 3600 * 24)
+          )
+        : 0;
+
+    let daysUntilBirthday = "N/A";
+    if (player.DOB) {
+      const birthday = parseDate(player.DOB);
+      if (!isNaN(birthday.getTime())) {
+        const today = new Date();
+        const nextBirthday = new Date(
+          today.getFullYear(),
+          birthday.getMonth(),
+          birthday.getDate()
+        );
+        if (nextBirthday < today) {
+          nextBirthday.setFullYear(nextBirthday.getFullYear() + 1);
+        }
+        const daysUntil = Math.ceil(
+          (nextBirthday.getTime() - today.getTime()) / (1000 * 60 * 60 * 24)
+        );
+        daysUntilBirthday = daysUntil.toString();
+      }
+    }
+
+    return {
+      mostFrequentTeammate,
+      mostFrequentOpponent,
+      appearancePercentage: appearancePercentage.toFixed(2),
+      firstAppearance: firstAppearance ? formatDate(firstAppearance) : "N/A",
+      lastAppearance: lastAppearance ? formatDate(lastAppearance) : "N/A",
+      daysActive,
+      daysUntilBirthday,
+      longestWinningStreak: maxWinStreak,
+      longestLosingStreak: maxLoseStreak,
+    };
+  };
+
+  const currentPlayer = players.find((p) => p.Player === selectedPlayer);
+  const playerStats = currentPlayer
+    ? calculatePlayerStats(currentPlayer)
+    : null;
+
+  if (!currentPlayer || !playerStats) {
+    return <div>No player data available</div>;
+  }
+
+  const StarSignIcon =
+    currentPlayer.StarSign && currentPlayer.StarSign in ZodiacIcons
+      ? ZodiacIcons[currentPlayer.StarSign as keyof typeof ZodiacIcons]
+      : User;
 
   return (
-    <div className="bg-white p-6 rounded-lg shadow-md col-span-2">
-      <h2 className="text-2xl font-semibold mb-4">Player Statistics</h2>
-      <Select
-        onValueChange={(value) =>
-          setSelectedPlayer(players.find((p) => p.id === value) || null)
-        }
-      >
-        <SelectTrigger className="w-[180px]">
-          <SelectValue placeholder="Select a player" />
-        </SelectTrigger>
-        <SelectContent>
-          {players.map((player) => (
-            <SelectItem key={player.id} value={player.id}>
-              {player.name}
-            </SelectItem>
-          ))}
-        </SelectContent>
-      </Select>
-      {selectedPlayer && (
-        <div className="mt-4">
-          <h3 className="text-xl font-medium mb-2">{selectedPlayer.name}</h3>
-          <p>Games Played: {selectedPlayer.played}</p>
-          <p>Wins: {selectedPlayer.won}</p>
-          <p>Draws: {selectedPlayer.drawn}</p>
-          <p>Losses: {selectedPlayer.lost}</p>
-          <p>Total Points: {selectedPlayer.points}</p>
-          <p>
-            Win Rate:{" "}
-            {((selectedPlayer.won / selectedPlayer.played) * 100).toFixed(2)}%
-          </p>
+    <Card className="w-full">
+      <CardHeader className="flex flex-row items-center justify-between">
+        <CardTitle className="text-2xl font-semibold">
+          Player Statistics
+        </CardTitle>
+        <Select value={selectedPlayer} onValueChange={setSelectedPlayer}>
+          <SelectTrigger className="w-[180px]">
+            <SelectValue placeholder="Select a player" />
+          </SelectTrigger>
+          <SelectContent>
+            {sortedPlayers.map((player) => (
+              <SelectItem key={player.Player} value={player.Player}>
+                {player.Player}
+              </SelectItem>
+            ))}
+          </SelectContent>
+        </Select>
+      </CardHeader>
+      <CardContent>
+        <div className="flex items-center space-x-4 mb-6">
+          <div className="bg-gray-200 rounded-full p-4">
+            <StarSignIcon className="h-16 w-16 text-gray-500" />
+          </div>
+          <div>
+            <h3 className="text-xl font-semibold">{currentPlayer.Player}</h3>
+            <p className="text-sm text-gray-500">
+              {currentPlayer.StarSign || "Unknown Star Sign"}
+            </p>
+          </div>
         </div>
-      )}
-    </div>
+
+        <Table>
+          <TableBody>
+            <TableRow>
+              <TableHead>Total Points</TableHead>
+              <TableCell>{currentPlayer.TotalPoints}</TableCell>
+            </TableRow>
+            <TableRow>
+              <TableHead>Points per Game</TableHead>
+              <TableCell>{currentPlayer.PointsPerGame.toFixed(2)}</TableCell>
+            </TableRow>
+            <TableRow>
+              <TableHead>Most Frequent Teammate</TableHead>
+              <TableCell>{playerStats.mostFrequentTeammate}</TableCell>
+            </TableRow>
+            <TableRow>
+              <TableHead>Most Frequent Opponent</TableHead>
+              <TableCell>{playerStats.mostFrequentOpponent}</TableCell>
+            </TableRow>
+            <TableRow>
+              <TableHead>Appearance %</TableHead>
+              <TableCell>{playerStats.appearancePercentage}%</TableCell>
+            </TableRow>
+            <TableRow>
+              <TableHead>First Appearance</TableHead>
+              <TableCell>{playerStats.firstAppearance}</TableCell>
+            </TableRow>
+            <TableRow>
+              <TableHead>Last Appearance</TableHead>
+              <TableCell>{playerStats.lastAppearance}</TableCell>
+            </TableRow>
+            <TableRow>
+              <TableHead>Days Active</TableHead>
+              <TableCell>{playerStats.daysActive}</TableCell>
+            </TableRow>
+            <TableRow>
+              <TableHead>Days Until Birthday</TableHead>
+              <TableCell>{playerStats.daysUntilBirthday}</TableCell>
+            </TableRow>
+            <TableRow>
+              <TableHead>Longest Winning Streak</TableHead>
+              <TableCell>{playerStats.longestWinningStreak}</TableCell>
+            </TableRow>
+            <TableRow>
+              <TableHead>Longest Losing Streak</TableHead>
+              <TableCell>{playerStats.longestLosingStreak}</TableCell>
+            </TableRow>
+          </TableBody>
+        </Table>
+      </CardContent>
+    </Card>
   );
 }
