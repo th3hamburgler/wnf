@@ -93,10 +93,7 @@ export default function PlayerStats({ players, matches }: PlayerStatsProps) {
 
       if (
         playerResult &&
-        (playerResult === "W" ||
-          playerResult === "L" ||
-          playerResult === "D1" ||
-          playerResult === "D2")
+        (playerResult === "W" || playerResult === "L" || playerResult === "D")
       ) {
         if (!firstAppearance) firstAppearance = date;
         lastAppearance = date;
