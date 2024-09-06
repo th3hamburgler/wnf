@@ -198,7 +198,6 @@ export default function TeamSetup({ processedPlayers }: TeamSetupProps) {
                     <span>{player.Player}</span>
                     <span className="text-sm text-gray-500">
                       PPG: {player.PointsPerGame.toFixed(2)} | Apps:{" "}
-                      {player.Appearances}
                     </span>
                   </div>
                   <CheckIcon

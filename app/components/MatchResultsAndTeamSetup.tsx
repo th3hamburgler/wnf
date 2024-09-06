@@ -369,8 +369,7 @@ export default function MatchResultsAndTeamSetup({
                   <div className="flex justify-between items-center w-full">
                     <span>{player.Player}</span>
                     <span className="text-sm text-gray-500">
-                      PPG: {player.PointsPerGame.toFixed(2)} | Apps:{" "}
-                      {player.Appearances}
+                      PPG: {player.PointsPerGame.toFixed(2)}
                     </span>
                   </div>
                   <CheckIcon
