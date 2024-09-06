@@ -1,11 +1,9 @@
 import React from "react";
-import MatchResults from "./MatchResults";
 import LeagueTable from "./LeagueTable";
 import PlayerStats from "./PlayerStats";
-import TeamSetup from "./TeamSetup";
 import { fetchFootballData } from "../lib/api";
 import DataProcessor from "./DataProcessor";
-import { ComboboxDemo } from "./ComboboxDemo";
+import MatchResultsAndTeamSetup from "./MatchResultsAndTeamSetup";
 
 export default async function FootballDashboard() {
   const data = await fetchFootballData();
@@ -14,13 +12,10 @@ export default async function FootballDashboard() {
     <div className="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-8">
       <div className="flex flex-col gap-4 md:gap-8">
         <div>
-          <MatchResults
+          <MatchResultsAndTeamSetup
             matches={data.processedMatches}
             players={data.processedPlayers}
           />
-        </div>
-        <div>
-          <TeamSetup processedPlayers={data.processedPlayers} />
         </div>
         <div className="flex-1">
           <PlayerStats
