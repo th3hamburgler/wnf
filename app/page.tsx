@@ -1,3 +1,4 @@
+import Image from "next/image";
 import FootballDashboard from "./components/FootballDashboard";
 
 export const metadata = {
@@ -8,11 +9,20 @@ export const metadata = {
 
 export default function Home() {
   return (
-    <main className="min-h-screen w-full bg-gray-100 py-4 md:py-8">
-      <div className="px-4 md:px-8  md:mx-auto max-w-[2400px]">
-        <h1 className="text-4xl font-bold text-center mb-4 md:mb-8">
-          WNF Dashboard
-        </h1>
+    <main className="min-h-screen w-full">
+      <div className="md:mx-auto max-w-[2400px] p-4 md:p-8">
+        <header className="flex justify-end mb-4 md:mb-8">
+          <div className="flex bg-white shadow-md rounded-full w-40 h-40">
+            {/* <Image
+              src="/images/logo.png"
+              alt="WNF Dashboard Logo"
+              width={120}
+              height={120}
+              className="justify-center items-center"
+            /> */}
+          </div>
+        </header>
+
         <FootballDashboard />
       </div>
     </main>

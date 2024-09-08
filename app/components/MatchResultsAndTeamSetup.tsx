@@ -178,7 +178,7 @@ export default function MatchResultsAndTeamSetup({
       teamName: string;
       teamStats: ReturnType<typeof calculateTeamStats>;
     }) => (
-      <div className="border rounded-lg p-4 w-full">
+      <div className="rounded-lg p-4 w-full bg-gray-800 border-none">
         <h3 className="text-xl font-semibold mb-4">{teamName}</h3>
         <div className="mb-4 space-y-2">
           <p className="flex justify-between">
@@ -252,7 +252,7 @@ export default function MatchResultsAndTeamSetup({
       const teamStats = calculateTeamStats(team.map((p) => p.Player));
 
       return (
-        <div className="border rounded-lg p-4 w-full">
+        <div className="border rounded-lg p-4 w-full bg-gray-800">
           <h3 className="text-xl font-semibold mb-4">{teamName}</h3>
           <div className="mb-4 space-y-2">
             <p className="flex justify-between">
@@ -299,6 +299,7 @@ export default function MatchResultsAndTeamSetup({
                       size="sm"
                       className="ml-2"
                       onClick={() => removePlayer(player)}
+                      aria-label={`Remove ${player.Player}`}
                     >
                       <X className="h-4 w-4" />
                     </Button>
@@ -332,7 +333,7 @@ export default function MatchResultsAndTeamSetup({
           variant="outline"
           role="combobox"
           aria-expanded={open}
-          className="w-full justify-between"
+          className="w-full justify-between hover:text-gray-200 text-gray-300 border rounded-lg p-4"
         >
           {team.length > 0
             ? `${team.length} player${team.length > 1 ? "s" : ""} selected`
@@ -340,9 +341,12 @@ export default function MatchResultsAndTeamSetup({
           <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
         </Button>
       </PopoverTrigger>
-      <PopoverContent className="w-full p-0">
+      <PopoverContent className="w-full p-0 text-black">
         <Command>
-          <CommandInput placeholder="Search player..." className="h-9" />
+          <CommandInput
+            placeholder="Search player..."
+            className="h-9 placeholder-gray-500"
+          />
           <CommandList>
             <CommandEmpty>No player found.</CommandEmpty>
             <CommandGroup>
@@ -411,9 +415,9 @@ export default function MatchResultsAndTeamSetup({
   }
 
   return (
-    <Card className="w-full">
+    <Card className="w-full Match bg-gray-900 rounded-3xl shadow-xl overflow-x-auto text-white border-4 border-white">
       <CardHeader>
-        <CardTitle className="text-2xl font-semibold">
+        <CardTitle className="text-3xl font-extrabold tracking-tight text-white uppercase">
           {isSelectingTeams ? "Set Up Teams" : "Match Results"}
         </CardTitle>
       </CardHeader>
@@ -463,6 +467,7 @@ export default function MatchResultsAndTeamSetup({
         {isLoading ? (
           <div className="flex justify-center items-center h-64">
             <Loader2 className="h-8 w-8 animate-spin" />
+            <span className="sr-only">Loading...</span>
           </div>
         ) : isSelectingTeams ? (
           <div className="flex flex-col lg:flex-row space-y-4 lg:space-y-0 lg:space-x-6">

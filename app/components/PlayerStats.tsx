@@ -9,16 +9,19 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableRow,
-} from "@/components/ui/table";
 import { Match, ProcessedPlayer } from "../lib/types";
 import * as ZodiacIcons from "../icons";
-import { User } from "lucide-react";
+import {
+  User,
+  Trophy,
+  Frown,
+  Calendar,
+  Users,
+  UserMinus,
+  Zap,
+  Star,
+} from "lucide-react";
+import { Badge } from "@/components/ui/badge";
 
 interface PlayerStatsProps {
   players: ProcessedPlayer[];
@@ -48,7 +51,7 @@ const getPPGColor = (ppg: number) => {
   if (ppg >= 0 && ppg < 1) return "bg-red-500 text-white";
   if (ppg >= 1 && ppg < 2) return "bg-amber-500 text-white";
   if (ppg >= 2 && ppg <= 3) return "bg-green-500 text-white";
-  return "bg-gray-500 text-white";
+  return "bg-blue-500 text-white";
 };
 
 const formatStreak = (streak: number): string => {
@@ -143,7 +146,7 @@ export default function PlayerStats({ players, matches }: PlayerStatsProps) {
       const players = sortedCounts
         .filter(([, count]) => count === maxCount)
         .map(([name, count]) => `${name} (${count})`);
-      return players.join(", ");
+      return players.join("\n");
     };
 
     const mostFrequentTeammate = formatPlayerList(teammateCounts);
@@ -204,16 +207,16 @@ export default function PlayerStats({ players, matches }: PlayerStatsProps) {
     : null;
 
   return (
-    <Card className="w-full">
+    <Card className="w-full bg-gray-900 text-white border-4 border-white rounded-3xl">
       <CardHeader className="flex flex-row items-center justify-between">
-        <CardTitle className="text-2xl font-semibold">
+        <CardTitle className="text-3xl font-extrabold tracking-tight text-white uppercase">
           Player Statistics
         </CardTitle>
         <Select value={selectedPlayer || ""} onValueChange={setSelectedPlayer}>
-          <SelectTrigger className="w-[180px]">
+          <SelectTrigger className="w-[180px] bg-gray-800 text-white border-gray-700">
             <SelectValue placeholder="Select a player" />
           </SelectTrigger>
-          <SelectContent>
+          <SelectContent className="bg-gray-800 text-white border-gray-700">
             {sortedPlayers.map((player) => (
               <SelectItem key={player.Player} value={player.Player}>
                 {player.Player}
@@ -225,91 +228,138 @@ export default function PlayerStats({ players, matches }: PlayerStatsProps) {
       <CardContent>
         {currentPlayer && playerStats ? (
           <>
-            <div className="flex items-center space-x-4 mb-6">
-              <div className="bg-gray-200 rounded-full p-4">
+            <div className="flex flex-col md:flex-row items-center md:items-start space-y-4 md:space-y-0 md:space-x-6 mb-6">
+              <div className="bg-gray-800 rounded-full p-6 flex-shrink-0">
                 {currentPlayer.StarSign &&
                 currentPlayer.StarSign in ZodiacIcons ? (
                   React.createElement(
                     ZodiacIcons[
                       currentPlayer.StarSign as keyof typeof ZodiacIcons
                     ],
-                    { className: "h-16 w-16 text-gray-500" }
+                    { className: "h-20 w-20 text-primary" }
                   )
                 ) : (
-                  <User className="h-16 w-16 text-gray-500" />
+                  <User className="h-20 w-20 text-primary" />
                 )}
               </div>
-              <div className="flex-grow">
-                <h3 className="text-xl font-semibold">
+              <div className="flex-grow text-center md:text-left">
+                <h3 className="text-3xl font-bold mb-2">
                   {currentPlayer.Player}
                 </h3>
-                <p className="text-sm text-gray-500">
+                <p className="text-lg text-gray-400 mb-4">
                   {currentPlayer.StarSign || "Unknown Star Sign"}
                 </p>
-              </div>
-              <div
-                className={`flex flex-col items-center justify-center rounded-full w-24 h-24 ${getPPGColor(
-                  currentPlayer.PointsPerGame
-                )}`}
-              >
-                <span className="text-2xl font-bold">
-                  {currentPlayer.TotalPoints}pts
-                </span>
-                <span className="text-sm">
-                  {currentPlayer.PointsPerGame.toFixed(2)}
-                </span>
+                <div className="flex flex-wrap justify-center md:justify-start gap-4">
+                  <Badge variant="secondary" className="text-lg px-3 py-1">
+                    {currentPlayer.Age} years old
+                  </Badge>
+                  <Badge variant="secondary" className="text-lg px-3 py-1">
+                    {currentPlayer.GamesPlayed} games played
+                  </Badge>
+                  <Badge
+                    className={`text-lg px-3 py-1 ${getPPGColor(
+                      currentPlayer.PointsPerGame
+                    )}`}
+                  >
+                    {currentPlayer.TotalPoints} pts |{" "}
+                    {currentPlayer.PointsPerGame.toFixed(2)} PPG
+                  </Badge>
+                </div>
               </div>
             </div>
 
-            <Table>
-              <TableBody>
-                <TableRow>
-                  <TableHead>Most Frequent Teammate(s)</TableHead>
-                  <TableCell>{playerStats.mostFrequentTeammate}</TableCell>
-                </TableRow>
-                <TableRow>
-                  <TableHead>Most Frequent Opponent(s)</TableHead>
-                  <TableCell>{playerStats.mostFrequentOpponent}</TableCell>
-                </TableRow>
-                <TableRow>
-                  <TableHead>Appearance %</TableHead>
-                  <TableCell>{playerStats.appearancePercentage}%</TableCell>
-                </TableRow>
-                <TableRow>
-                  <TableHead>First Appearance</TableHead>
-                  <TableCell>{playerStats.firstAppearance}</TableCell>
-                </TableRow>
-                <TableRow>
-                  <TableHead>Last Appearance</TableHead>
-                  <TableCell>{playerStats.lastAppearance}</TableCell>
-                </TableRow>
-                <TableRow>
-                  <TableHead>Days Active</TableHead>
-                  <TableCell>{playerStats.daysActive}</TableCell>
-                </TableRow>
-                <TableRow>
-                  <TableHead>Days Until Birthday</TableHead>
-                  <TableCell>{playerStats.daysUntilBirthday}</TableCell>
-                </TableRow>
-                <TableRow>
-                  <TableHead>Longest Winning Streak</TableHead>
-                  <TableCell>{playerStats.longestWinningStreak}</TableCell>
-                </TableRow>
-                <TableRow>
-                  <TableHead>Longest Losing Streak</TableHead>
-                  <TableCell>{playerStats.longestLosingStreak}</TableCell>
-                </TableRow>
-              </TableBody>
-            </Table>
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+              <StatCard
+                icon={<Trophy className="h-6 w-6 text-yellow-500" />}
+                title="Longest Winning Streak"
+                value={playerStats.longestWinningStreak}
+              />
+              <StatCard
+                icon={<Frown className="h-6 w-6 text-red-500" />}
+                title="Longest Losing Streak"
+                value={playerStats.longestLosingStreak}
+              />
+              <StatCard
+                icon={<Calendar className="h-6 w-6 text-green-500" />}
+                title="Days Active"
+                value={playerStats.daysActive.toString()}
+              />
+              <StatCard
+                icon={<Users className="h-6 w-6 text-blue-500" />}
+                title="Most Frequent Teammate(s)"
+                value={playerStats.mostFrequentTeammate}
+                multiline
+              />
+              <StatCard
+                icon={<UserMinus className="h-6 w-6 text-purple-500" />}
+                title="Most Frequent Opponent(s)"
+                value={playerStats.mostFrequentOpponent}
+                multiline
+              />
+              <StatCard
+                icon={<Zap className="h-6 w-6 text-amber-500" />}
+                title="Appearance %"
+                value={`${playerStats.appearancePercentage}%`}
+              />
+            </div>
+
+            <div className="mt-6 grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div className="bg-gray-800 p-4 rounded-lg">
+                <h4 className="text-lg font-semibold mb-2">First Appearance</h4>
+                <p>{playerStats.firstAppearance}</p>
+              </div>
+              <div className="bg-gray-800 p-4 rounded-lg">
+                <h4 className="text-lg font-semibold mb-2">Last Appearance</h4>
+                <p>{playerStats.lastAppearance}</p>
+              </div>
+            </div>
+
+            {playerStats.daysUntilBirthday !== "N/A" && (
+              <div className="mt-6 bg-gray-800 p-4 rounded-lg">
+                <h4 className="text-lg font-semibold mb-2">
+                  Days Until Birthday
+                </h4>
+                <p>{playerStats.daysUntilBirthday}</p>
+              </div>
+            )}
           </>
         ) : (
-          <div className="text-center py-8">
-            <p className="text-lg text-gray-500">
+          <div className="text-center py-12">
+            <User className="h-16 w-16 text-gray-600 mx-auto mb-4" />
+            <p className="text-xl text-gray-400">
               Select a player to view their statistics
             </p>
           </div>
         )}
       </CardContent>
     </Card>
+  );
+}
+
+function StatCard({
+  icon,
+  title,
+  value,
+  multiline = false,
+}: {
+  icon: React.ReactNode;
+  title: string;
+  value: string;
+  multiline?: boolean;
+}) {
+  return (
+    <div className="bg-gray-800 p-4 flex items-start space-x-4">
+      <div className="bg-gray-700 rounded-full p-3 mt-1">{icon}</div>
+      <div>
+        <h4 className="text-sm font-medium text-gray-400">{title}</h4>
+        {multiline ? (
+          <div className="text-base font-semibold whitespace-pre-line">
+            {value}
+          </div>
+        ) : (
+          <p className="text-lg font-semibold">{value}</p>
+        )}
+      </div>
+    </div>
   );
 }
