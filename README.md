@@ -43,7 +43,7 @@ WNF Dashboard is a web application designed to track player statistics and game 
    npm install
    ```
 
-3. Run the development server:
+3. Run the development server (will use seeded data in app/lib/rawData.ts):
 
    ```
    npm run dev
@@ -118,8 +118,14 @@ This project is set up for easy deployment on Vercel. You can deploy your projec
    ```
 
 2. Deploy the `.next` folder to Vercel:
+
    ```
    vercel --prod
+   ```
+
+3. Run prod version
+   ```
+   npm start
    ```
 
 After deployment, your project will be live on a Vercel URL. You can customize this URL in your Vercel project settings.
