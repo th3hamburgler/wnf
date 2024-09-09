@@ -3,17 +3,13 @@
 import React, { useState, useMemo, useCallback } from "react";
 import { ChevronLeft, ChevronRight, Medal, Loader2, Users } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Match, ProcessedPlayer } from "../lib/types";
 import Image from "next/image";
 import { cn } from "@/lib/utils";
 import { formatDate } from "../utils/dateFormatters";
-import {
-  sortPlayersByPPG,
-  getTeamNames,
-  calculateTeamStats,
-} from "../utils/playerUtils";
+import { sortPlayersByPPG, getTeamNames } from "../utils/playerUtils";
 import { PlayerList } from "./PlayerList";
 import { TeamSetupPlayerList } from "./TeamSetupPlayerList";
 import { ComboBox } from "./ComboBox";
@@ -66,15 +62,6 @@ export default function MatchResultsAndTeamSetup({
   );
   const sortedTeamB = useMemo(
     () => sortPlayersByPPG(players, currentMatch.teamB),
-    [currentMatch.teamB, players]
-  );
-
-  const teamAStats = useMemo(
-    () => calculateTeamStats(players, currentMatch.teamA),
-    [currentMatch.teamA, players]
-  );
-  const teamBStats = useMemo(
-    () => calculateTeamStats(players, currentMatch.teamB),
     [currentMatch.teamB, players]
   );
 

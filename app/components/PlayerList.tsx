@@ -15,8 +15,6 @@ export const PlayerList: React.FC<PlayerListProps> = ({
   players,
   teamName,
   allPlayers,
-  goalDifference,
-  isTeamA,
 }) => {
   const teamStats = calculateTeamStats(allPlayers, players);
 
