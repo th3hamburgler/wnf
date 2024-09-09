@@ -15,17 +15,7 @@ import {
 } from "@/components/ui/table";
 import { Badge } from "@/components/ui/badge";
 import { ScrollArea } from "@/components/ui/scroll-area";
-import {
-  User,
-  Calendar,
-  Star,
-  Trophy,
-  Database,
-  MinusCircle,
-  XCircle,
-  Target,
-  Users,
-} from "lucide-react";
+import { User, Calendar, Trophy, Database, Users, Bug } from "lucide-react";
 
 interface DataProcessorProps {
   rawData: RawPlayerData[];
@@ -115,9 +105,12 @@ export default function DataProcessor({
   return (
     <Card className="w-full bg-gray-900 text-white border-4 border-wheat-100 rounded-3xl">
       <CardHeader>
-        <CardTitle className="text-3xl font-extrabold tracking-tight text-wheat-100 uppercase">
-          Data Debugging
-        </CardTitle>
+        <div className="flex items-center">
+          <Bug className="w-8 h-8 lg:w-16 lg:h-16 text-wheat-100 mr-3 lg:mr-5" />
+          <h2 className="text-3xl lg:text-6xl font-extrabold tracking-tight text-wheat-100 uppercase">
+            Data Debugging
+          </h2>
+        </div>
       </CardHeader>
       <CardContent>
         <Tabs defaultValue="processedPlayers" className="space-y-4">

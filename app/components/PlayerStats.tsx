@@ -47,11 +47,13 @@ const getWeeksAgo = (date: Date): string => {
   return diffWeeks === 1 ? "1 week ago" : `${diffWeeks} weeks ago`;
 };
 
-const getPPGColor = (ppg: number) => {
-  if (ppg >= 0 && ppg < 1) return "bg-red-500 text-white";
-  if (ppg >= 1 && ppg < 2) return "bg-amber-500 text-white";
-  if (ppg >= 2 && ppg <= 3) return "bg-green-500 text-white";
-  return "bg-blue-500 text-white";
+const getPPGVariant = (
+  ppg: number
+): "destructive" | "default" | "secondary" | "outline" => {
+  if (ppg >= 0 && ppg < 1) return "destructive";
+  if (ppg >= 1 && ppg < 2) return "secondary";
+  if (ppg >= 2 && ppg <= 3) return "default";
+  return "outline"; // fallback to secondary for any value outside the range
 };
 
 const formatStreak = (streak: number): string => {
@@ -207,11 +209,14 @@ export default function PlayerStats({ players, matches }: PlayerStatsProps) {
     : null;
 
   return (
-    <Card className="w-full bg-gray-900 text-white border-4 border-wheat-100 rounded-3xl">
+    <Card className="w-full bg-gray-900 text-white border-4 border-wheat-100 rounded-3xl  p-4 lg:p-8 shadow-xl overflow-x-auto ">
       <CardHeader className="flex flex-row items-center justify-between">
-        <CardTitle className="text-3xl font-extrabold tracking-tight text-wheat-100 uppercase">
-          Player Statistics
-        </CardTitle>
+        <div className="flex items-center">
+          <User className="w-8 h-8 lg:w-16 lg:h-16 text-wheat-100 mr-3 lg:mr-5" />
+          <h2 className="text-3xl lg:text-6xl font-extrabold tracking-tight text-wheat-100 uppercase">
+            Player Statistics
+          </h2>
+        </div>
         <Select value={selectedPlayer || ""} onValueChange={setSelectedPlayer}>
           <SelectTrigger className="w-[180px] bg-gray-800 text-white border-gray-700">
             <SelectValue placeholder="Select a player" />
@@ -250,16 +255,15 @@ export default function PlayerStats({ players, matches }: PlayerStatsProps) {
                   {currentPlayer.StarSign || "Unknown Star Sign"}
                 </p>
                 <div className="flex flex-wrap justify-center md:justify-start gap-4">
-                  <Badge variant="secondary" className="text-lg px-3 py-1">
+                  <Badge variant="outline" className="text-lg px-3 py-1">
                     {currentPlayer.Age} years old
                   </Badge>
-                  <Badge variant="secondary" className="text-lg px-3 py-1">
+                  <Badge variant="outline" className="text-lg px-3 py-1">
                     {currentPlayer.GamesPlayed} games played
                   </Badge>
                   <Badge
-                    className={`text-lg px-3 py-1 ${getPPGColor(
-                      currentPlayer.PointsPerGame
-                    )}`}
+                    variant={getPPGVariant(currentPlayer.PointsPerGame)}
+                    className="text-lg lg:text-xl px-3 py-1"
                   >
                     {currentPlayer.TotalPoints} pts |{" "}
                     {currentPlayer.PointsPerGame.toFixed(2)} PPG

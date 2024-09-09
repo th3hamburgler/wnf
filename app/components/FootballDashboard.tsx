@@ -17,7 +17,7 @@ export default async function FootballDashboard() {
             players={data.processedPlayers}
           />
         </div>
-        <div className="flex-1">
+        <div className="flex flex-1">
           <PlayerStats
             players={data.processedPlayers}
             matches={data.processedMatches}
