@@ -352,7 +352,7 @@ function StatCard({
   multiline?: boolean;
 }) {
   return (
-    <div className="bg-gray-800 p-4 flex items-start space-x-4">
+    <div className="bg-gray-800 rounded-xl p-4 flex items-start space-x-4">
       <div className="bg-gray-700 rounded-full p-3 mt-1">{icon}</div>
       <div>
         <h4 className="text-sm font-medium text-gray-400">{title}</h4>
