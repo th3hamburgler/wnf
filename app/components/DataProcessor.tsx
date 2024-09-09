@@ -113,10 +113,10 @@ export default function DataProcessor({
   );
 
   return (
-    <Card className="w-full bg-gray-900 text-white border-4 border-white">
+    <Card className="w-full bg-gray-900 text-white border-4 border-wheat-100 rounded-3xl">
       <CardHeader>
-        <CardTitle className="text-3xl font-extrabold tracking-tight text-white uppercase">
-          Processed Football Data
+        <CardTitle className="text-3xl font-extrabold tracking-tight text-wheat-100 uppercase">
+          Data Debugging
         </CardTitle>
       </CardHeader>
       <CardContent>

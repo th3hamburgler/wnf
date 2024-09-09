@@ -207,9 +207,9 @@ export default function PlayerStats({ players, matches }: PlayerStatsProps) {
     : null;
 
   return (
-    <Card className="w-full bg-gray-900 text-white border-4 border-white rounded-3xl">
+    <Card className="w-full bg-gray-900 text-white border-4 border-wheat-100 rounded-3xl">
       <CardHeader className="flex flex-row items-center justify-between">
-        <CardTitle className="text-3xl font-extrabold tracking-tight text-white uppercase">
+        <CardTitle className="text-3xl font-extrabold tracking-tight text-wheat-100 uppercase">
           Player Statistics
         </CardTitle>
         <Select value={selectedPlayer || ""} onValueChange={setSelectedPlayer}>

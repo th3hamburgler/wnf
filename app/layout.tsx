@@ -1,18 +1,9 @@
 import type { Metadata } from "next";
 import { Analytics } from "@vercel/analytics/react";
-import localFont from "next/font/local";
+import { Inter } from "next/font/google";
 import "./globals.css";
 
-const geistSans = localFont({
-  src: "./fonts/GeistVF.woff",
-  variable: "--font-geist-sans",
-  weight: "100 900",
-});
-const geistMono = localFont({
-  src: "./fonts/GeistMonoVF.woff",
-  variable: "--font-geist-mono",
-  weight: "100 900",
-});
+const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
   title: "WNF Dashboard",
@@ -26,16 +17,17 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" className="h-full bg-black text-white">
-      <head>
-        <link
-          href="https://fonts.googleapis.com/css2?family=Inter:wght@100..900&display=swap"
-          rel="stylesheet"
-        ></link>
-      </head>
+    <html lang="en" className="h-full">
       <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased min-h-screen bg-[url('/images/Grass03.png')] bg-repeat bg-[length:800px_800px]`}
+        className={`${inter.className} antialiased min-h-screen bg-blue-950 text-white relative`}
       >
+        <div
+          className="fixed inset-0 z-[-1] bg-cover bg-center bg-no-repeat"
+          style={{
+            backgroundImage: "url('/images/stacked-waves.png')",
+            backgroundAttachment: "fixed",
+          }}
+        />
         <main className="relative mx-auto">{children}</main>
         <Analytics />
       </body>

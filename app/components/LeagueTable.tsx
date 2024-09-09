@@ -55,8 +55,8 @@ export default function LeagueTable({ players }: LeagueTableProps) {
   };
 
   return (
-    <div className="bg-gray-900 p-6 rounded-3xl shadow-xl overflow-x-auto border-4 border-white">
-      <h2 className="text-3xl font-extrabold tracking-tight text-white uppercase">
+    <div className="bg-gray-900 p-6 rounded-3xl shadow-xl overflow-x-auto border-4 border-wheat-100">
+      <h2 className="text-3xl font-extrabold tracking-tight text-wheat-100 uppercase">
         League Table
       </h2>
       <Table>

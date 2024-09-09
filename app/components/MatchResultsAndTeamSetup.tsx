@@ -105,7 +105,7 @@ export default function MatchResultsAndTeamSetup({
 
   const getPPGColor = useCallback((ppg: number) => {
     if (ppg >= 0 && ppg < 1) return "bg-red-500 text-white";
-    if (ppg >= 1 && ppg < 2) return "bg-amber-500 text-white";
+    if (ppg >= 1 && ppg < 2) return "bg-wheat-500 text-white";
     if (ppg >= 2 && ppg <= 3) return "bg-green-500 text-white";
     return "bg-gray-500 text-white";
   }, []);
@@ -415,9 +415,9 @@ export default function MatchResultsAndTeamSetup({
   }
 
   return (
-    <Card className="w-full Match bg-gray-900 rounded-3xl shadow-xl overflow-x-auto text-white border-4 border-white">
+    <Card className="w-full Match bg-gray-900 rounded-3xl shadow-xl overflow-x-auto text-white border-4 border-wheat-100">
       <CardHeader>
-        <CardTitle className="text-3xl font-extrabold tracking-tight text-white uppercase">
+        <CardTitle className="text-3xl font-extrabold tracking-tight text-wheat-100 uppercase">
           {isSelectingTeams ? "Set Up Teams" : "Match Results"}
         </CardTitle>
       </CardHeader>
