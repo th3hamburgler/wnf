@@ -107,7 +107,7 @@ export default function DataProcessor({
       <CardHeader>
         <div className="flex items-center">
           <Bug className="w-8 h-8 lg:w-16 lg:h-16 text-wheat-100 mr-3 lg:mr-5" />
-          <h2 className="text-3xl lg:text-6xl font-extrabold tracking-tight text-wheat-100 uppercase">
+          <h2 className="text-3xl xl:text-4xl 2xl:text-6xl font-extrabold tracking-tight text-wheat-100 uppercase">
             Data Debugging
           </h2>
         </div>
