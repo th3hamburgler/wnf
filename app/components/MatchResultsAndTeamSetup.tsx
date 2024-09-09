@@ -104,7 +104,7 @@ export default function MatchResultsAndTeamSetup({
       <CardHeader>
         <div className="flex items-center">
           <Medal className="w-8 h-8 lg:w-16 lg:h-16 text-wheat-100 mr-3 lg:mr-5" />
-          <h2 className="text-3xl lg:text-6xl font-extrabold tracking-tight text-wheat-100 uppercase">
+          <h2 className="text-3xl xl:text-4xl 2xl:text-6xl font-extrabold tracking-tight text-wheat-100 uppercase">
             {isSelectingTeams ? "Set Up Teams" : "Match Results"}
           </h2>
         </div>
@@ -162,7 +162,7 @@ export default function MatchResultsAndTeamSetup({
             <span className="sr-only">Loading...</span>
           </div>
         ) : isSelectingTeams ? (
-          <div className="flex flex-col lg:flex-row space-y-4 lg:space-y-0 lg:space-x-6">
+          <div className="flex flex-col 2xl:flex-row space-y-4 2xl:space-y-0 2xl:space-x-6">
             <div className="w-full lg:w-1/2 space-y-4">
               <TeamSetupPlayerList
                 team={baghdad}
@@ -230,7 +230,7 @@ export default function MatchResultsAndTeamSetup({
                 Goal Difference
               </div>
             </div>
-            <div className="flex flex-col lg:flex-row space-y-6 lg:space-y-0 lg:space-x-6">
+            <div className="flex flex-col 2xl:flex-row space-y-6 2xl:space-y-0 2xl:space-x-6">
               <PlayerList
                 players={sortedTeamA}
                 teamName={teamNames.teamA}

@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useState } from "react";
+import { Card, CardHeader } from "@/components/ui/card";
 import {
   Table,
   TableBody,
@@ -55,13 +56,15 @@ export default function LeagueTable({ players }: LeagueTableProps) {
   };
 
   return (
-    <div className="bg-gray-900 p-4 lg:p-8 rounded-3xl shadow-xl overflow-x-auto border-4 border-wheat-100">
-      <div className="flex items-center mb-4 lg:mb-8">
-        <Trophy className="w-8 h-8 lg:w-16 lg:h-16 text-wheat-100 mr-3 lg:mr-5" />
-        <h2 className="text-3xl lg:text-6xl font-extrabold tracking-tight text-wheat-100 uppercase">
-          League Table
-        </h2>
-      </div>
+    <Card className="w-full Match bg-gray-900 rounded-3xl shadow-xl overflow-x-auto text-white border-4 border-wheat-100">
+      <CardHeader>
+        <div className="flex items-center mb-4 lg:mb-8">
+          <Trophy className="w-8 h-8 lg:w-16 lg:h-16 text-wheat-100 mr-3 lg:mr-5" />
+          <h2 className="text-3xl xl:text-4xl 2xl:text-6xl font-extrabold tracking-tight text-wheat-100 uppercase">
+            League Table
+          </h2>
+        </div>
+      </CardHeader>
       <Table>
         <TableHeader>
           <TableRow className="  border-b">
@@ -171,6 +174,6 @@ export default function LeagueTable({ players }: LeagueTableProps) {
           ))}
         </TableBody>
       </Table>
-    </div>
+    </Card>
   );
 }
