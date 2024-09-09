@@ -64,7 +64,7 @@ export default function LeagueTable({ players }: LeagueTableProps) {
       </div>
       <Table>
         <TableHeader>
-          <TableRow className=" border-wheat-100 border-b">
+          <TableRow className="  border-b">
             <TableHead className="w-[50px] px-2 lg:px-4 text-gray-400 text-right text-sm lg:text-xl">
               #
             </TableHead>
@@ -139,8 +139,8 @@ export default function LeagueTable({ players }: LeagueTableProps) {
               key={player.Player}
               className={`${
                 index % 2 === 0
-                  ? "bg-gray-900 border-wheat-100"
-                  : "bg-gray-950/50 border-wheat-100"
+                  ? "bg-gray-900 border-none"
+                  : "bg-gray-950/50 border-none"
               } transition-colors hover:bg-gray-800`}
             >
               <TableCell className="font-medium px-2 lg:px-4 text-gray-300 text-right text-sm lg:text-xl">

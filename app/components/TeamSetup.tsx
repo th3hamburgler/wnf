@@ -197,7 +197,7 @@ export default function TeamSetup({ processedPlayers }: TeamSetupProps) {
                   <div className="flex justify-between items-center w-full">
                     <span>{player.Player}</span>
                     <span className="text-sm text-gray-500">
-                      PPG: {player.PointsPerGame.toFixed(2)} | Apps:{" "}
+                      Avg: {player.PointsPerGame.toFixed(2)} | Apps:{" "}
                     </span>
                   </div>
                   <CheckIcon

@@ -266,7 +266,7 @@ export default function PlayerStats({ players, matches }: PlayerStatsProps) {
                     className="text-lg lg:text-xl px-3 py-1"
                   >
                     {currentPlayer.TotalPoints} pts |{" "}
-                    {currentPlayer.PointsPerGame.toFixed(2)} PPG
+                    {currentPlayer.PointsPerGame.toFixed(2)} avg
                   </Badge>
                 </div>
               </div>
