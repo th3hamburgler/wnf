@@ -11,21 +11,97 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
 import { ChevronUp, ChevronDown, Trophy } from "lucide-react";
-import { ProcessedPlayer } from "../lib/types";
+import { CalendarIcon } from "@radix-ui/react-icons";
+import { ProcessedPlayer, Match } from "../lib/types";
+import { Calendar } from "@/components/ui/calendar";
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover";
+import { format } from "date-fns";
+import { cn } from "@/lib/utils";
 
 interface LeagueTableProps {
   players: ProcessedPlayer[];
+  matches: Match[];
 }
 
 type SortKey = keyof ProcessedPlayer;
 type SortOrder = "asc" | "desc";
 
-export default function LeagueTable({ players }: LeagueTableProps) {
+export default function LeagueTable({ players, matches }: LeagueTableProps) {
   const [sortKey, setSortKey] = useState<SortKey>("PointsPerGame");
   const [sortOrder, setSortOrder] = useState<SortOrder>("desc");
+  const [startDate, setStartDate] = useState<Date | undefined>(undefined);
+  const [lastGames, setLastGames] = useState<number | "">(10);
 
-  const sortedPlayers = [...players].sort((a, b) => {
+  const filteredMatches = matches.filter((match) => {
+    if (!startDate) return true;
+    return new Date(match.date) >= startDate;
+  });
+
+  const calculatePlayerStats = (player: ProcessedPlayer) => {
+    let gamesPlayed = 0;
+    let wins = 0;
+    let draws = 0;
+    let losses = 0;
+    let totalPoints = 0;
+
+    const playerMatches = filteredMatches.filter(
+      (match) =>
+        match.teamA.includes(player.Player) ||
+        match.teamB.includes(player.Player)
+    );
+
+    const matchesToConsider =
+      typeof lastGames === "number" && lastGames > 0
+        ? playerMatches.slice(-lastGames)
+        : playerMatches;
+
+    matchesToConsider.forEach((match) => {
+      gamesPlayed++;
+      if (match.teamA.includes(player.Player)) {
+        if (match.GoalDifference > 0) {
+          wins++;
+          totalPoints += 3;
+        } else if (match.GoalDifference === 0) {
+          draws++;
+          totalPoints += 1;
+        } else {
+          losses++;
+        }
+      } else {
+        if (match.GoalDifference < 0) {
+          wins++;
+          totalPoints += 3;
+        } else if (match.GoalDifference === 0) {
+          draws++;
+          totalPoints += 1;
+        } else {
+          losses++;
+        }
+      }
+    });
+
+    const pointsPerGame = gamesPlayed > 0 ? totalPoints / gamesPlayed : 0;
+
+    return {
+      ...player,
+      GamesPlayed: gamesPlayed,
+      Wins: wins,
+      Draws: draws,
+      Losses: losses,
+      TotalPoints: totalPoints,
+      PointsPerGame: pointsPerGame,
+    };
+  };
+
+  const updatedPlayers = players.map(calculatePlayerStats);
+
+  const sortedPlayers = [...updatedPlayers].sort((a, b) => {
     if (sortKey === "Player") {
       return sortOrder === "asc"
         ? a.Player.localeCompare(b.Player)
@@ -64,10 +140,64 @@ export default function LeagueTable({ players }: LeagueTableProps) {
             League Table
           </h2>
         </div>
+        <div className="flex flex-col sm:flex-row gap-4 mb-4">
+          <div className="flex-1">
+            <label
+              htmlFor="startDate"
+              className="block text-sm font-medium text-gray-300 mb-1"
+            >
+              Start Date
+            </label>
+            <Popover>
+              <PopoverTrigger asChild>
+                <Button
+                  variant={"outline"}
+                  className={cn(
+                    "w-full justify-start text-left font-normal",
+                    !startDate && "text-muted-foreground"
+                  )}
+                >
+                  {startDate ? (
+                    format(startDate, "PPP")
+                  ) : (
+                    <span>Pick a date</span>
+                  )}
+                  <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
+                </Button>
+              </PopoverTrigger>
+              <PopoverContent className="w-auto p-0 bg-black" align="start">
+                <Calendar
+                  mode="single"
+                  selected={startDate}
+                  onSelect={setStartDate}
+                  initialFocus
+                />
+              </PopoverContent>
+            </Popover>
+          </div>
+          <div className="flex-1">
+            <label
+              htmlFor="lastGames"
+              className="block text-sm font-medium text-gray-300 mb-1"
+            >
+              Last X Games
+            </label>
+            <Input
+              type="number"
+              id="lastGames"
+              value={lastGames}
+              onChange={(e) =>
+                setLastGames(e.target.value ? parseInt(e.target.value) : "")
+              }
+              min="1"
+              className="w-full bg-gray-800 text-white"
+            />
+          </div>
+        </div>
       </CardHeader>
       <Table>
         <TableHeader>
-          <TableRow className="  border-b">
+          <TableRow className="border-b">
             <TableHead className="w-[50px] px-2 lg:px-4 text-gray-400 text-right text-sm lg:text-xl">
               #
             </TableHead>

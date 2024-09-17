@@ -55,7 +55,10 @@ export default function FootballDashboard() {
         </div>
       </div>
 
-      <LeagueTable players={data.processedPlayers} />
+      <LeagueTable
+        players={data.processedPlayers}
+        matches={data.processedMatches}
+      />
 
       <div className="md:col-span-2">
         <DataProcessor
