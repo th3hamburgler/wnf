@@ -17,6 +17,11 @@ module.exports = {
   	},
   	extend: {
   		colors: {
+			border: "rgb(239, 229, 195)",
+			input: "rgb(239, 229, 195)",
+			ring: "rgb(239, 229, 195)",
+			background: "rgb(17, 24, 39)",
+			foreground: "rgb(255, 255, 255)",
 			'blue': {
 				'50':  '#e8f9ff',
 				'100': '#cceeff',

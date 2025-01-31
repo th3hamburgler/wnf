@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useMemo } from "react";
 import { Card, CardHeader } from "@/components/ui/card";
 import {
   Table,
@@ -11,6 +11,7 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { Button } from "@/components/ui/button";
+import { Switch } from "@/components/ui/switch";
 import { ChevronUp, ChevronDown, Trophy } from "lucide-react";
 import { ProcessedPlayer } from "../lib/types";
 
@@ -21,21 +22,32 @@ interface LeagueTableProps {
 type SortKey = keyof ProcessedPlayer;
 type SortOrder = "asc" | "desc";
 
+const MIN_GAMES = 8;
+
 export default function LeagueTable({ players }: LeagueTableProps) {
   const [sortKey, setSortKey] = useState<SortKey>("TotalPoints");
   const [sortOrder, setSortOrder] = useState<SortOrder>("desc");
+  const [playedMinGames, setPlayedMinGames] = useState(true);
 
-  const sortedPlayers = [...players].sort((a, b) => {
-    if (sortKey === "Player") {
-      return sortOrder === "asc"
-        ? a.Player.localeCompare(b.Player)
-        : b.Player.localeCompare(a.Player);
-    } else {
-      return sortOrder === "asc"
-        ? (a[sortKey] as number) - (b[sortKey] as number)
-        : (b[sortKey] as number) - (a[sortKey] as number);
-    }
-  });
+  const filteredPlayers = useMemo(() => {
+    return playedMinGames
+      ? players.filter((player) => player.GamesPlayed >= MIN_GAMES)
+      : players;
+  }, [players, playedMinGames]);
+
+  const sortedPlayers = useMemo(() => {
+    return [...filteredPlayers].sort((a, b) => {
+      if (sortKey === "Player") {
+        return sortOrder === "asc"
+          ? a.Player.localeCompare(b.Player)
+          : b.Player.localeCompare(a.Player);
+      } else {
+        return sortOrder === "asc"
+          ? (a[sortKey] as number) - (b[sortKey] as number)
+          : (b[sortKey] as number) - (a[sortKey] as number);
+      }
+    });
+  }, [filteredPlayers, sortKey, sortOrder]);
 
   const handleSort = (key: SortKey) => {
     if (key === sortKey) {
@@ -58,16 +70,27 @@ export default function LeagueTable({ players }: LeagueTableProps) {
   return (
     <Card className="w-full Match bg-gray-900 rounded-3xl shadow-xl overflow-x-auto text-white border-4 border-wheat-100">
       <CardHeader>
-        <div className="flex items-center mb-4 lg:mb-8">
-          <Trophy className="w-8 h-8 lg:w-16 lg:h-16 text-wheat-100 mr-3 lg:mr-5" />
-          <h2 className="text-3xl xl:text-4xl 2xl:text-6xl font-extrabold tracking-tight text-wheat-100 uppercase">
-            League Table
-          </h2>
+        <div className="flex flex-col lg:flex-row items-start lg:items-center justify-between mb-4 lg:mb-8 space-y-4 lg:space-y-0">
+          <div className="flex items-center">
+            <Trophy className="w-8 h-8 lg:w-16 lg:h-16 text-wheat-100 mr-3 lg:mr-5" />
+            <h2 className="text-3xl xl:text-4xl 2xl:text-6xl font-extrabold tracking-tight text-wheat-100 uppercase">
+              League Table
+            </h2>
+          </div>
+          <div className="flex items-center space-x-2">
+            <span className="text-sm lg:text-base">
+              {MIN_GAMES} games or more
+            </span>
+            <Switch
+              checked={playedMinGames}
+              onCheckedChange={setPlayedMinGames}
+            />
+          </div>
         </div>
       </CardHeader>
       <Table>
         <TableHeader>
-          <TableRow className="  border-b">
+          <TableRow className="border-b">
             <TableHead className="w-[50px] px-2 lg:px-4 text-gray-400 text-right text-sm lg:text-xl">
               #
             </TableHead>
