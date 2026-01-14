@@ -1,4 +1,5 @@
 import { Match, RawPlayerData, ProcessedPlayer } from '../lib/types';
+import { getPlayerRecentResults, calculateFormPoints } from './formUtils';
 
 /**
  * Extracts unique calendar years from match dates.
@@ -138,6 +139,10 @@ export function calculatePlayerStatsFromMatches(
     const totalPoints = wins * 3 + draws;
     const pointsPerGame = gamesPlayed > 0 ? totalPoints / gamesPlayed : 0;
 
+    // Calculate form based on filtered matches
+    const form = getPlayerRecentResults(item.Player, rawData, matches, 5);
+    const formPoints = calculateFormPoints(form);
+
     processedPlayers.push({
       Player: item.Player,
       DOB: item.DOB || null,
@@ -148,7 +153,9 @@ export function calculatePlayerStatsFromMatches(
       Losses: losses,
       TotalPoints: totalPoints,
       PointsPerGame: Math.round(pointsPerGame * 100) / 100,
-      StarSign: getStarSign(item.DOB)
+      StarSign: getStarSign(item.DOB),
+      Form: form,
+      FormPoints: formPoints
     });
   });
 
