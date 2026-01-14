@@ -22,3 +22,27 @@ export function getAvailableSeasons(matches: Match[]): number[] {
 
   return Array.from(years).sort((a, b) => b - a);
 }
+
+/**
+ * Filters matches by calendar year.
+ * @param matches - Array of matches with dates in dd/mm/yyyy format
+ * @param year - Calendar year to filter by, or null for all matches (All Time)
+ * @returns Filtered array of matches
+ */
+export function filterMatchesBySeason(matches: Match[], year: number | null): Match[] {
+  if (year === null) {
+    return matches;
+  }
+
+  return matches.filter((match) => {
+    if (!match.date || match.abandoned) {
+      return false;
+    }
+    const parts = match.date.split('/');
+    if (parts.length !== 3) {
+      return false;
+    }
+    const matchYear = parseInt(parts[2], 10);
+    return matchYear === year;
+  });
+}
