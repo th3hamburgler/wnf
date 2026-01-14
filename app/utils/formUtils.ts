@@ -51,3 +51,16 @@ export function getPlayerRecentResults(
   // Return last `count` results (most recent), maintaining oldest-to-newest order
   return results.slice(-count);
 }
+
+/**
+ * Calculates form points from recent results.
+ * @param results - Array of form results ('W' | 'D' | 'L')
+ * @returns Total points (W=3, D=1, L=0)
+ */
+export function calculateFormPoints(results: FormResult[]): number {
+  return results.reduce((total, result) => {
+    if (result === 'W') return total + 3;
+    if (result === 'D') return total + 1;
+    return total;
+  }, 0);
+}
