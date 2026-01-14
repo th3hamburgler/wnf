@@ -10,80 +10,31 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
 import { Button } from "@/components/ui/button";
 import { Switch } from "@/components/ui/switch";
 import { ChevronUp, ChevronDown, Trophy } from "lucide-react";
-import { ProcessedPlayer, RawPlayerData, Match } from "../lib/types";
-import {
-  getAvailableSeasons,
-  filterMatchesBySeason,
-  calculatePlayerStatsFromMatches,
-} from "../utils/seasonUtils";
+import { ProcessedPlayer } from "../lib/types";
+import FormDisplay from "./FormDisplay";
 
 interface LeagueTableProps {
   players: ProcessedPlayer[];
-  rawData?: RawPlayerData[];
-  matches?: Match[];
 }
 
-type SortKey = keyof ProcessedPlayer;
+type SortKey = Exclude<keyof ProcessedPlayer, 'Form' | 'DOB' | 'StarSign'>;
 type SortOrder = "asc" | "desc";
 
 const MIN_GAMES = 8;
 
-export default function LeagueTable({
-  players,
-  rawData,
-  matches,
-}: LeagueTableProps) {
-  const currentYear = new Date().getFullYear();
-
-  // Season selection state
-  const [selectedSeason, setSelectedSeason] = useState<number | null>(currentYear);
-
-  // Calculate available seasons from matches
-  const availableSeasons = useMemo(() => {
-    if (!matches) return [];
-    return getAvailableSeasons(matches);
-  }, [matches]);
-
-  // Calculate players based on selected season
-  const seasonPlayers = useMemo(() => {
-    // If no rawData/matches provided, or "All Time" selected (null), use original players
-    if (!rawData || !matches || selectedSeason === null) {
-      return players;
-    }
-
-    // Filter matches by season and recalculate stats
-    const filteredMatches = filterMatchesBySeason(matches, selectedSeason);
-    if (filteredMatches.length === 0) {
-      return players; // Fall back to all-time if no matches in selected season
-    }
-
-    return calculatePlayerStatsFromMatches(rawData, filteredMatches);
-  }, [players, rawData, matches, selectedSeason]);
-
-  const handleSeasonChange = (value: string) => {
-    const newSeason = value === "all" ? null : parseInt(value, 10);
-    setSelectedSeason(newSeason);
-  };
-
+export default function LeagueTable({ players }: LeagueTableProps) {
   const [sortKey, setSortKey] = useState<SortKey>("TotalPoints");
   const [sortOrder, setSortOrder] = useState<SortOrder>("desc");
   const [playedMinGames, setPlayedMinGames] = useState(true);
 
   const filteredPlayers = useMemo(() => {
     return playedMinGames
-      ? seasonPlayers.filter((player) => player.GamesPlayed >= MIN_GAMES)
-      : seasonPlayers;
-  }, [seasonPlayers, playedMinGames]);
+      ? players.filter((player) => player.GamesPlayed >= MIN_GAMES)
+      : players;
+  }, [players, playedMinGames]);
 
   const sortedPlayers = useMemo(() => {
     return [...filteredPlayers].sort((a, b) => {
@@ -127,43 +78,14 @@ export default function LeagueTable({
               League Table
             </h2>
           </div>
-          <div className="flex flex-col lg:flex-row items-start lg:items-center gap-4">
-            {availableSeasons.length > 0 && (
-              <Select
-                value={selectedSeason === null ? "all" : selectedSeason.toString()}
-                onValueChange={handleSeasonChange}
-              >
-                <SelectTrigger className="w-[140px] bg-gray-800 border-wheat-100 text-white">
-                  <SelectValue placeholder="Select season" />
-                </SelectTrigger>
-                <SelectContent className="bg-gray-800 border-wheat-100">
-                  {availableSeasons.map((year) => (
-                    <SelectItem
-                      key={year}
-                      value={year.toString()}
-                      className="text-white hover:bg-gray-700 focus:bg-gray-700"
-                    >
-                      {year}
-                    </SelectItem>
-                  ))}
-                  <SelectItem
-                    value="all"
-                    className="text-white hover:bg-gray-700 focus:bg-gray-700"
-                  >
-                    All Time
-                  </SelectItem>
-                </SelectContent>
-              </Select>
-            )}
-            <div className="flex items-center space-x-2">
-              <span className="text-sm lg:text-base">
-                {MIN_GAMES} games or more
-              </span>
-              <Switch
-                checked={playedMinGames}
-                onCheckedChange={setPlayedMinGames}
-              />
-            </div>
+          <div className="flex items-center space-x-2">
+            <span className="text-sm lg:text-base">
+              {MIN_GAMES} games or more
+            </span>
+            <Switch
+              checked={playedMinGames}
+              onCheckedChange={setPlayedMinGames}
+            />
           </div>
         </div>
       </CardHeader>
@@ -227,6 +149,15 @@ export default function LeagueTable({
                 Pts <SortIcon columnKey="TotalPoints" />
               </Button>
             </TableHead>
+            <TableHead className="px-2 lg:px-4 text-center">
+              <Button
+                variant="ghost"
+                onClick={() => handleSort("FormPoints")}
+                className="font-semibold text-gray-200 hover:text-white hover:bg-gray-800 px-0 text-sm lg:text-xl"
+              >
+                Form <SortIcon columnKey="FormPoints" />
+              </Button>
+            </TableHead>
             <TableHead className="px-2 lg:px-4 text-right">
               <Button
                 variant="ghost"
@@ -268,6 +199,11 @@ export default function LeagueTable({
               </TableCell>
               <TableCell className="px-2 lg:px-4 text-gray-300 text-right font-semibold text-sm lg:text-xl">
                 {player.TotalPoints}
+              </TableCell>
+              <TableCell className="px-2 lg:px-4">
+                <div className="flex justify-center">
+                  <FormDisplay results={player.Form} />
+                </div>
               </TableCell>
               <TableCell className="px-2 lg:px-4 text-gray-300 text-right font-semibold text-sm lg:text-xl">
                 {player.PointsPerGame.toFixed(2)}

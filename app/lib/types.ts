@@ -15,6 +15,8 @@ export interface ProcessedPlayer {
   TotalPoints: number;
   PointsPerGame: number;
   StarSign: string | null;
+  Form: ('W' | 'D' | 'L')[];
+  FormPoints: number;
 }
 
 export interface Player {
