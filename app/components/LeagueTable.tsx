@@ -12,12 +12,22 @@ import {
 } from "@/components/ui/table";
 import { Button } from "@/components/ui/button";
 import { Switch } from "@/components/ui/switch";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import { ChevronUp, ChevronDown, Trophy } from "lucide-react";
-import { ProcessedPlayer } from "../lib/types";
+import { ProcessedPlayer, RawPlayerData, Match } from "../lib/types";
 import FormDisplay from "./FormDisplay";
+import { getAvailableSeasons } from "../utils/seasonUtils";
 
 interface LeagueTableProps {
   players: ProcessedPlayer[];
+  rawData: RawPlayerData[];
+  matches: Match[];
 }
 
 type SortKey = Exclude<keyof ProcessedPlayer, 'Form' | 'DOB' | 'StarSign'>;
@@ -25,10 +35,21 @@ type SortOrder = "asc" | "desc";
 
 const MIN_GAMES = 8;
 
-export default function LeagueTable({ players }: LeagueTableProps) {
+export default function LeagueTable({ players, rawData, matches }: LeagueTableProps) {
   const [sortKey, setSortKey] = useState<SortKey>("TotalPoints");
   const [sortOrder, setSortOrder] = useState<SortOrder>("desc");
   const [playedMinGames, setPlayedMinGames] = useState(true);
+
+  // Get available seasons and default to current year
+  const availableSeasons = useMemo(() => getAvailableSeasons(matches), [matches]);
+  const currentYear = new Date().getFullYear();
+  const defaultSeason = availableSeasons.includes(currentYear)
+    ? currentYear.toString()
+    : availableSeasons[0]?.toString() || "all";
+  const [selectedSeason, setSelectedSeason] = useState<string>(defaultSeason);
+
+  // For now, use players directly (US-005 will add filtering logic)
+  void rawData;
 
   const filteredPlayers = useMemo(() => {
     return playedMinGames
@@ -78,14 +99,38 @@ export default function LeagueTable({ players }: LeagueTableProps) {
               League Table
             </h2>
           </div>
-          <div className="flex items-center space-x-2">
-            <span className="text-sm lg:text-base">
-              {MIN_GAMES} games or more
-            </span>
-            <Switch
-              checked={playedMinGames}
-              onCheckedChange={setPlayedMinGames}
-            />
+          <div className="flex flex-col lg:flex-row items-start lg:items-center gap-4">
+            <Select value={selectedSeason} onValueChange={setSelectedSeason}>
+              <SelectTrigger className="w-[140px] bg-gray-800 border-wheat-100 text-white">
+                <SelectValue placeholder="Select season" />
+              </SelectTrigger>
+              <SelectContent className="bg-gray-800 border-wheat-100">
+                {availableSeasons.map((year) => (
+                  <SelectItem
+                    key={year}
+                    value={year.toString()}
+                    className="text-white hover:bg-gray-700 focus:bg-gray-700 focus:text-white"
+                  >
+                    {year}
+                  </SelectItem>
+                ))}
+                <SelectItem
+                  value="all"
+                  className="text-white hover:bg-gray-700 focus:bg-gray-700 focus:text-white"
+                >
+                  All Time
+                </SelectItem>
+              </SelectContent>
+            </Select>
+            <div className="flex items-center space-x-2">
+              <span className="text-sm lg:text-base">
+                {MIN_GAMES} games or more
+              </span>
+              <Switch
+                checked={playedMinGames}
+                onCheckedChange={setPlayedMinGames}
+              />
+            </div>
           </div>
         </div>
       </CardHeader>

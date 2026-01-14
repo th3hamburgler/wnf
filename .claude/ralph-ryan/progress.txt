@@ -1,0 +1,46 @@
+## Codebase Patterns
+
+- Date format in codebase is `dd/mm/yyyy`
+- Raw data has match results as W/L/D1/D2 keyed by date
+- D1/D2 both represent draws (team A vs team B perspective)
+- Points calculation: W=3, D=1, L=0
+- Need Array.from() for Set iteration due to TS target config
+- Select component styled with bg-gray-800, border-wheat-100 to match theme
+
+---
+
+# Progress Log
+
+## 2026-01-14 - US-001
+- Implemented `getPlayerRecentResults()` in `app/utils/formUtils.ts`
+- Created `FormResult` type alias for 'W' | 'D' | 'L'
+- **Learnings:**
+  - Matches need to be sorted by date to determine recency
+  - D1/D2 both map to 'D' in form results
+  - slice(-count) returns last N elements while preserving order
+---
+
+## 2026-01-14 - US-002
+- Implemented `calculateFormPoints()` in `app/utils/formUtils.ts`
+- **Learnings:**
+  - Simple reduce pattern works well for summing points
+  - Empty array returns 0 (handles new players gracefully)
+---
+
+## 2026-01-14 - US-003
+- Created `FormBadge` component in `app/components/FormBadge.tsx`
+- **Learnings:**
+  - Import FormResult type from formUtils for type safety
+  - colorMap Record pattern for clean color mapping
+  - Responsive sizing with h-6 w-6 lg:h-7 lg:w-7
+---
+
+## 2026-01-14 - US-004
+- Added season selector dropdown to LeagueTable header
+- Files changed: `app/components/LeagueTable.tsx`
+- **Learnings:**
+  - Select component needs explicit styling for dark theme (bg-gray-800, border-wheat-100)
+  - SelectItem focus state needs focus:bg-gray-700 focus:text-white for proper visibility
+  - Default season uses current year if available, otherwise first available year
+---
+

@@ -1,0 +1,94 @@
+{
+  "project": "WNF Dashboard",
+  "featureName": "season-filter",
+  "branchName": "ralph/season-filter",
+  "description": "Add a season filter to the League Table that allows users to view player statistics for a specific calendar year, defaulting to current year with previous years and all-time options.",
+  "userStories": [
+    {
+      "id": "US-001",
+      "title": "Extract available seasons from match data",
+      "description": "As a developer, I need a utility function that extracts unique calendar years from match dates so that the UI can display available season options.",
+      "acceptanceCriteria": [
+        "Create `getAvailableSeasons(matches: Match[]): number[]` in `app/utils/seasonUtils.ts`",
+        "Returns array of years sorted descending (most recent first)",
+        "Parses dates in `dd/mm/yyyy` format",
+        "Typecheck passes"
+      ],
+      "priority": 1,
+      "passes": true,
+      "notes": "Implemented in app/utils/seasonUtils.ts - returns years sorted descending"
+    },
+    {
+      "id": "US-002",
+      "title": "Create function to filter matches by season",
+      "description": "As a developer, I need a function to filter matches by calendar year so that stats can be recalculated for a specific season.",
+      "acceptanceCriteria": [
+        "Create `filterMatchesBySeason(matches: Match[], year: number | null): Match[]` in `app/utils/seasonUtils.ts`",
+        "When year is `null`, return all matches (All Time)",
+        "Filter matches where date year matches the provided year",
+        "Typecheck passes"
+      ],
+      "priority": 2,
+      "passes": true,
+      "notes": "Implemented in app/utils/seasonUtils.ts - returns all matches when year is null"
+    },
+    {
+      "id": "US-003",
+      "title": "Create function to calculate player stats from filtered matches",
+      "description": "As a developer, I need a function to recalculate player statistics from a subset of matches so that seasonal stats can be displayed.",
+      "acceptanceCriteria": [
+        "Create `calculatePlayerStatsFromMatches(rawData: RawPlayerData[], matches: Match[]): ProcessedPlayer[]` in `app/utils/seasonUtils.ts`",
+        "Calculate GamesPlayed, Wins, Draws, Losses, TotalPoints, PointsPerGame for each player based only on provided matches",
+        "Preserve Player, DOB, Age, StarSign from existing data",
+        "Typecheck passes"
+      ],
+      "priority": 3,
+      "passes": true,
+      "notes": "Implemented in app/utils/seasonUtils.ts - includes Form/FormPoints calculation"
+    },
+    {
+      "id": "US-004",
+      "title": "Add season selector dropdown to LeagueTable",
+      "description": "As a user, I want a dropdown above the league table to select a season so that I can view stats for a specific year.",
+      "acceptanceCriteria": [
+        "Add Select component from shadcn/ui next to existing \"8 games or more\" toggle",
+        "Options: Current year (default), previous years detected from data, \"All Time\"",
+        "Display format: \"2024\", \"2023\", etc. and \"All Time\"",
+        "Styled consistently with existing UI (wheat/gray theme)",
+        "Typecheck passes"
+      ],
+      "priority": 4,
+      "passes": true,
+      "notes": "Added Select component with available seasons and All Time option, styled with wheat/gray theme"
+    },
+    {
+      "id": "US-005",
+      "title": "Integrate season filter with LeagueTable stats",
+      "description": "As a user, I want the league table to update when I change the season filter so that I see stats for the selected period.",
+      "acceptanceCriteria": [
+        "LeagueTable receives `rawData` and `matches` as additional props",
+        "When season changes, recalculate player stats using `calculatePlayerStatsFromMatches`",
+        "Default selected season is current calendar year",
+        "\"All Time\" shows original unfiltered stats",
+        "Table re-renders with updated stats when season changes",
+        "Typecheck passes"
+      ],
+      "priority": 5,
+      "passes": false,
+      "notes": ""
+    },
+    {
+      "id": "US-006",
+      "title": "Update FootballDashboard to pass required data to LeagueTable",
+      "description": "As a developer, I need to update the parent component to pass raw data and matches to LeagueTable for season filtering.",
+      "acceptanceCriteria": [
+        "FootballDashboard passes `rawData` and `matches` props to LeagueTable",
+        "No changes to existing data fetching logic",
+        "Typecheck passes"
+      ],
+      "priority": 6,
+      "passes": true,
+      "notes": "FootballDashboard passes rawData and matches to LeagueTable"
+    }
+  ]
+}
