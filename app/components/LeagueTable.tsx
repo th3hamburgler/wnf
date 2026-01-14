@@ -20,13 +20,17 @@ import {
 import { Button } from "@/components/ui/button";
 import { Switch } from "@/components/ui/switch";
 import { ChevronUp, ChevronDown, Trophy } from "lucide-react";
-import { ProcessedPlayer } from "../lib/types";
+import { ProcessedPlayer, RawPlayerData, Match } from "../lib/types";
+import {
+  getAvailableSeasons,
+  filterMatchesBySeason,
+  calculatePlayerStatsFromMatches,
+} from "../utils/seasonUtils";
 
 interface LeagueTableProps {
   players: ProcessedPlayer[];
-  availableSeasons?: number[];
-  selectedSeason?: number | null;
-  onSeasonChange?: (season: number | null) => void;
+  rawData?: RawPlayerData[];
+  matches?: Match[];
 }
 
 type SortKey = keyof ProcessedPlayer;
@@ -36,33 +40,50 @@ const MIN_GAMES = 8;
 
 export default function LeagueTable({
   players,
-  availableSeasons = [],
-  selectedSeason,
-  onSeasonChange
+  rawData,
+  matches,
 }: LeagueTableProps) {
   const currentYear = new Date().getFullYear();
 
-  // Internal state for season selection if not controlled externally
-  const [internalSeason, setInternalSeason] = useState<number | null>(currentYear);
+  // Season selection state
+  const [selectedSeason, setSelectedSeason] = useState<number | null>(currentYear);
 
-  const activeSeason = selectedSeason !== undefined ? selectedSeason : internalSeason;
+  // Calculate available seasons from matches
+  const availableSeasons = useMemo(() => {
+    if (!matches) return [];
+    return getAvailableSeasons(matches);
+  }, [matches]);
+
+  // Calculate players based on selected season
+  const seasonPlayers = useMemo(() => {
+    // If no rawData/matches provided, or "All Time" selected (null), use original players
+    if (!rawData || !matches || selectedSeason === null) {
+      return players;
+    }
+
+    // Filter matches by season and recalculate stats
+    const filteredMatches = filterMatchesBySeason(matches, selectedSeason);
+    if (filteredMatches.length === 0) {
+      return players; // Fall back to all-time if no matches in selected season
+    }
+
+    return calculatePlayerStatsFromMatches(rawData, filteredMatches);
+  }, [players, rawData, matches, selectedSeason]);
+
   const handleSeasonChange = (value: string) => {
     const newSeason = value === "all" ? null : parseInt(value, 10);
-    if (onSeasonChange) {
-      onSeasonChange(newSeason);
-    } else {
-      setInternalSeason(newSeason);
-    }
+    setSelectedSeason(newSeason);
   };
+
   const [sortKey, setSortKey] = useState<SortKey>("TotalPoints");
   const [sortOrder, setSortOrder] = useState<SortOrder>("desc");
   const [playedMinGames, setPlayedMinGames] = useState(true);
 
   const filteredPlayers = useMemo(() => {
     return playedMinGames
-      ? players.filter((player) => player.GamesPlayed >= MIN_GAMES)
-      : players;
-  }, [players, playedMinGames]);
+      ? seasonPlayers.filter((player) => player.GamesPlayed >= MIN_GAMES)
+      : seasonPlayers;
+  }, [seasonPlayers, playedMinGames]);
 
   const sortedPlayers = useMemo(() => {
     return [...filteredPlayers].sort((a, b) => {
@@ -109,7 +130,7 @@ export default function LeagueTable({
           <div className="flex flex-col lg:flex-row items-start lg:items-center gap-4">
             {availableSeasons.length > 0 && (
               <Select
-                value={activeSeason === null ? "all" : activeSeason.toString()}
+                value={selectedSeason === null ? "all" : selectedSeason.toString()}
                 onValueChange={handleSeasonChange}
               >
                 <SelectTrigger className="w-[140px] bg-gray-800 border-wheat-100 text-white">
