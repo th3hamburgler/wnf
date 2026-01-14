@@ -10,6 +10,13 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import { Button } from "@/components/ui/button";
 import { Switch } from "@/components/ui/switch";
 import { ChevronUp, ChevronDown, Trophy } from "lucide-react";
@@ -17,6 +24,9 @@ import { ProcessedPlayer } from "../lib/types";
 
 interface LeagueTableProps {
   players: ProcessedPlayer[];
+  availableSeasons?: number[];
+  selectedSeason?: number | null;
+  onSeasonChange?: (season: number | null) => void;
 }
 
 type SortKey = keyof ProcessedPlayer;
@@ -24,7 +34,26 @@ type SortOrder = "asc" | "desc";
 
 const MIN_GAMES = 8;
 
-export default function LeagueTable({ players }: LeagueTableProps) {
+export default function LeagueTable({
+  players,
+  availableSeasons = [],
+  selectedSeason,
+  onSeasonChange
+}: LeagueTableProps) {
+  const currentYear = new Date().getFullYear();
+
+  // Internal state for season selection if not controlled externally
+  const [internalSeason, setInternalSeason] = useState<number | null>(currentYear);
+
+  const activeSeason = selectedSeason !== undefined ? selectedSeason : internalSeason;
+  const handleSeasonChange = (value: string) => {
+    const newSeason = value === "all" ? null : parseInt(value, 10);
+    if (onSeasonChange) {
+      onSeasonChange(newSeason);
+    } else {
+      setInternalSeason(newSeason);
+    }
+  };
   const [sortKey, setSortKey] = useState<SortKey>("TotalPoints");
   const [sortOrder, setSortOrder] = useState<SortOrder>("desc");
   const [playedMinGames, setPlayedMinGames] = useState(true);
@@ -77,14 +106,43 @@ export default function LeagueTable({ players }: LeagueTableProps) {
               League Table
             </h2>
           </div>
-          <div className="flex items-center space-x-2">
-            <span className="text-sm lg:text-base">
-              {MIN_GAMES} games or more
-            </span>
-            <Switch
-              checked={playedMinGames}
-              onCheckedChange={setPlayedMinGames}
-            />
+          <div className="flex flex-col lg:flex-row items-start lg:items-center gap-4">
+            {availableSeasons.length > 0 && (
+              <Select
+                value={activeSeason === null ? "all" : activeSeason.toString()}
+                onValueChange={handleSeasonChange}
+              >
+                <SelectTrigger className="w-[140px] bg-gray-800 border-wheat-100 text-white">
+                  <SelectValue placeholder="Select season" />
+                </SelectTrigger>
+                <SelectContent className="bg-gray-800 border-wheat-100">
+                  {availableSeasons.map((year) => (
+                    <SelectItem
+                      key={year}
+                      value={year.toString()}
+                      className="text-white hover:bg-gray-700 focus:bg-gray-700"
+                    >
+                      {year}
+                    </SelectItem>
+                  ))}
+                  <SelectItem
+                    value="all"
+                    className="text-white hover:bg-gray-700 focus:bg-gray-700"
+                  >
+                    All Time
+                  </SelectItem>
+                </SelectContent>
+              </Select>
+            )}
+            <div className="flex items-center space-x-2">
+              <span className="text-sm lg:text-base">
+                {MIN_GAMES} games or more
+              </span>
+              <Switch
+                checked={playedMinGames}
+                onCheckedChange={setPlayedMinGames}
+              />
+            </div>
           </div>
         </div>
       </CardHeader>
