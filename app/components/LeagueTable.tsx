@@ -22,7 +22,11 @@ import {
 import { ChevronUp, ChevronDown, Trophy } from "lucide-react";
 import { ProcessedPlayer, RawPlayerData, Match } from "../lib/types";
 import FormDisplay from "./FormDisplay";
-import { getAvailableSeasons } from "../utils/seasonUtils";
+import {
+  getAvailableSeasons,
+  filterMatchesBySeason,
+  calculatePlayerStatsFromMatches,
+} from "../utils/seasonUtils";
 
 interface LeagueTableProps {
   players: ProcessedPlayer[];
@@ -48,14 +52,21 @@ export default function LeagueTable({ players, rawData, matches }: LeagueTablePr
     : availableSeasons[0]?.toString() || "all";
   const [selectedSeason, setSelectedSeason] = useState<string>(defaultSeason);
 
-  // For now, use players directly (US-005 will add filtering logic)
-  void rawData;
+  // Calculate player stats based on selected season
+  const seasonPlayers = useMemo(() => {
+    if (selectedSeason === "all") {
+      return players;
+    }
+    const year = parseInt(selectedSeason, 10);
+    const filteredMatches = filterMatchesBySeason(matches, year);
+    return calculatePlayerStatsFromMatches(rawData, filteredMatches);
+  }, [selectedSeason, players, matches, rawData]);
 
   const filteredPlayers = useMemo(() => {
     return playedMinGames
-      ? players.filter((player) => player.GamesPlayed >= MIN_GAMES)
-      : players;
-  }, [players, playedMinGames]);
+      ? seasonPlayers.filter((player) => player.GamesPlayed >= MIN_GAMES)
+      : seasonPlayers;
+  }, [seasonPlayers, playedMinGames]);
 
   const sortedPlayers = useMemo(() => {
     return [...filteredPlayers].sort((a, b) => {

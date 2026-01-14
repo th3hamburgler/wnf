@@ -74,8 +74,8 @@
         "Typecheck passes"
       ],
       "priority": 5,
-      "passes": false,
-      "notes": ""
+      "passes": true,
+      "notes": "Season filter recalculates stats using calculatePlayerStatsFromMatches, All Time shows original stats"
     },
     {
       "id": "US-006",

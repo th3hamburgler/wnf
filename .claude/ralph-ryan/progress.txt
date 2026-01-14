@@ -44,3 +44,12 @@
   - Default season uses current year if available, otherwise first available year
 ---
 
+## 2026-01-14 - US-005
+- Integrated season filter with LeagueTable stats
+- Files changed: `app/components/LeagueTable.tsx`
+- **Learnings:**
+  - useMemo chain: availableSeasons -> seasonPlayers -> filteredPlayers -> sortedPlayers
+  - "all" value returns original players array (no recalculation needed)
+  - parseInt needed to convert string selectedSeason to number for filterMatchesBySeason
+---
+
