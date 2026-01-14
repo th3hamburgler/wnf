@@ -14,12 +14,13 @@ import { Button } from "@/components/ui/button";
 import { Switch } from "@/components/ui/switch";
 import { ChevronUp, ChevronDown, Trophy } from "lucide-react";
 import { ProcessedPlayer } from "../lib/types";
+import FormDisplay from "./FormDisplay";
 
 interface LeagueTableProps {
   players: ProcessedPlayer[];
 }
 
-type SortKey = keyof ProcessedPlayer;
+type SortKey = Exclude<keyof ProcessedPlayer, 'Form' | 'DOB' | 'StarSign'>;
 type SortOrder = "asc" | "desc";
 
 const MIN_GAMES = 8;
@@ -148,6 +149,15 @@ export default function LeagueTable({ players }: LeagueTableProps) {
                 Pts <SortIcon columnKey="TotalPoints" />
               </Button>
             </TableHead>
+            <TableHead className="px-2 lg:px-4 text-center">
+              <Button
+                variant="ghost"
+                onClick={() => handleSort("FormPoints")}
+                className="font-semibold text-gray-200 hover:text-white hover:bg-gray-800 px-0 text-sm lg:text-xl"
+              >
+                Form <SortIcon columnKey="FormPoints" />
+              </Button>
+            </TableHead>
             <TableHead className="px-2 lg:px-4 text-right">
               <Button
                 variant="ghost"
@@ -189,6 +199,11 @@ export default function LeagueTable({ players }: LeagueTableProps) {
               </TableCell>
               <TableCell className="px-2 lg:px-4 text-gray-300 text-right font-semibold text-sm lg:text-xl">
                 {player.TotalPoints}
+              </TableCell>
+              <TableCell className="px-2 lg:px-4">
+                <div className="flex justify-center">
+                  <FormDisplay results={player.Form} />
+                </div>
               </TableCell>
               <TableCell className="px-2 lg:px-4 text-gray-300 text-right font-semibold text-sm lg:text-xl">
                 {player.PointsPerGame.toFixed(2)}

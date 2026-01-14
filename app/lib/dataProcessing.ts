@@ -1,4 +1,5 @@
 import { FootballData, RawPlayerData, Player, Match, ProcessedPlayer } from './types';
+import { getPlayerRecentResults, calculateFormPoints } from '../utils/formUtils';
 
 function calculateAge(dob: string | null): number | null {
   if (!dob) return null;
@@ -49,42 +50,11 @@ export function processRawData(rawData: RawPlayerData[]): FootballData {
   const matches: Match[] = [];
   const processedPlayers: ProcessedPlayer[] = [];
 
-  const datesToProcess = Object.keys(rawData[0]).filter(key => 
+  const datesToProcess = Object.keys(rawData[0]).filter(key =>
     key.match(/^\d{2}\/\d{2}\/\d{4}$/) && key !== 'DOB'
   );
 
-  // Process players
-  rawData.forEach((item, index) => {
-    if (item.Player !== "Total Players" && item.Player !== "Goal Difference" && item.Player !== "Who Picked Teams") {
-      const player: ProcessedPlayer = {
-        Player: item.Player,
-        DOB: item.DOB || null,
-        Age: calculateAge(item.DOB),
-        GamesPlayed: parseInt(item['Games Played']) || 0,
-        Wins: parseInt(item['Wins']) || 0,
-        Draws: parseInt(item['Draws']) || 0,
-        Losses: parseInt(item['Losses']) || 0,
-        TotalPoints: parseInt(item['Total points']) || 0,
-        PointsPerGame: parseFloat(item['Points per game']) || 0,
-        StarSign: getStarSign(item.DOB)
-      };
-      processedPlayers.push(player);
-
-      players.push({
-        id: index.toString(),
-        name: item.Player,
-        played: player.GamesPlayed,
-        won: player.Wins,
-        drawn: player.Draws,
-        lost: player.Losses,
-        points: player.TotalPoints,
-        pointsPerGame: player.PointsPerGame,
-        starSign: player.StarSign
-      });
-    }
-  });
-
-  // Process matches
+  // Process matches first (needed for form calculation)
   datesToProcess.forEach(date => {
     const teamA: string[] = [];
     const teamB: string[] = [];
@@ -120,6 +90,42 @@ export function processRawData(rawData: RawPlayerData[]): FootballData {
     };
 
     matches.push(match);
+  });
+
+  // Process players (after matches so we can calculate form)
+  rawData.forEach((item, index) => {
+    if (item.Player !== "Total Players" && item.Player !== "Goal Difference" && item.Player !== "Who Picked Teams") {
+      const form = getPlayerRecentResults(item.Player, rawData, matches, 5);
+      const formPoints = calculateFormPoints(form);
+
+      const player: ProcessedPlayer = {
+        Player: item.Player,
+        DOB: item.DOB || null,
+        Age: calculateAge(item.DOB),
+        GamesPlayed: parseInt(item['Games Played']) || 0,
+        Wins: parseInt(item['Wins']) || 0,
+        Draws: parseInt(item['Draws']) || 0,
+        Losses: parseInt(item['Losses']) || 0,
+        TotalPoints: parseInt(item['Total points']) || 0,
+        PointsPerGame: parseFloat(item['Points per game']) || 0,
+        StarSign: getStarSign(item.DOB),
+        Form: form,
+        FormPoints: formPoints
+      };
+      processedPlayers.push(player);
+
+      players.push({
+        id: index.toString(),
+        name: item.Player,
+        played: player.GamesPlayed,
+        won: player.Wins,
+        drawn: player.Draws,
+        lost: player.Losses,
+        points: player.TotalPoints,
+        pointsPerGame: player.PointsPerGame,
+        starSign: player.StarSign
+      });
+    }
   });
 
   return {
